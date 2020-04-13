@@ -1,2 +1,2 @@
-# tony.yang98-gmail.com
+# OCamlWire - a Campuswire CLI
 CS 3110 Project
