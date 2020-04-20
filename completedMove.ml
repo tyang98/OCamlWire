@@ -39,8 +39,7 @@ module Make =
             (fun (i, wb) -> i * (List.fold_left (fun a b -> a * b) 1 wb))
         )
 
-
-
     let words m = 
       failwith "Unimplemented"
+
   end
