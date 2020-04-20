@@ -1,13 +1,17 @@
-
 type direction = Across | Down
 
-type t = unit
+type t = {
+  letter : char list;
+  current_loc : (int * int);
+  direct : direction;
+}
+
 
 let letters m = 
-  failwith "Unimplemented"
+  m.letter
 
-let location = 
-  failwith "Unimplemented"
+let location m = 
+  m.current_loc
 
-let direction = 
-  failwith "Unimplemented"
+let direction m = 
+  m.direct
