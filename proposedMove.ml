@@ -3,6 +3,8 @@ type direction = Across | Down
 
 type t = unit
 
+type direction = Across | Down
+
 let letters m = 
   failwith "Unimplemented"
 

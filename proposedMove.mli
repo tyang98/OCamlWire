@@ -2,7 +2,7 @@
 type t 
 
 (** The type of directions representing either across or down *)
-type direction = Across | Down
+type direction 
 
 (** [letters m] is the list of characters representing each letter used 
     for proposed move [m]. *)
