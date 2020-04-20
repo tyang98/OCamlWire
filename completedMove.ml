@@ -1,20 +1,24 @@
 module type LetterValueMap = sig 
-  type t
-
   val get : char -> int
 end 
+
+module type CompletedMove = sig
+  type t
+
+  module LV : LetterValueMap
+
+  val score : t -> int
+  val words : t -> string list
+end
 
 let split (s : string) : char list = 
   List.init (String.length s) (String.get s) 
 
-module CompletedMove = 
+module Make = 
   functor (LetterVal : LetterValueMap) -> struct
     type t = (string * (char * int) list * int list) list
 
     module LV = LetterVal
-
-
-
 
     let score m = 
       List.fold_left (+) 0 

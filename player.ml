@@ -1,4 +1,4 @@
-type t = CompletedMove.t list
+type t = unit
 
 type tile = Letter of char | Blank
 

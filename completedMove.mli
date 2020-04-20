@@ -1,14 +1,14 @@
 module type LetterValueMap = sig 
-  type t
-
   val get : char -> int
 end 
 
-
-
-module CompletedMove : functor (LetterValue : LetterValueMap) -> sig
+module type CompletedMove = sig
   type t
+
+  module LV : LetterValueMap
 
   val score : t -> int
   val words : t -> string list
 end
+
+module Make : functor (LetterVal : LetterValueMap) -> CompletedMove
