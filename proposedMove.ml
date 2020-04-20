@@ -6,7 +6,6 @@ type t = {
   direct : direction;
 }
 
-
 let letters m = 
   m.letter
 
