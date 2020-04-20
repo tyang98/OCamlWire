@@ -6,4 +6,4 @@ type tile
 
 (** [next_tile t] is the next tile to be drawn from the tile inventory, followed
     by a tile inventory with the tile [tile] removed*)
-val next_tile : t -> tile * t
+val next_tile : t -> tile option * t
