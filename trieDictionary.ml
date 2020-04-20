@@ -8,6 +8,8 @@ module Make = functor (K : OrderedType) -> struct
 
   type 'a t = Node of 'a option * 'a t Children.t
 
+  let empty = Node (None, Children.empty)
+
   let insert word e t = failwith "Unimplemented"
 
   let get word t = failwith "Unimplemented"

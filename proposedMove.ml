@@ -1,4 +1,6 @@
 
+type direction = Across | Down
+
 type t = unit
 
 let letters m = 

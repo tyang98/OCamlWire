@@ -8,6 +8,8 @@ module type Dictionary = sig
 
   type 'a t
 
+  val empty : 'a t
+
   val insert : Key.t list -> 'a -> 'a t -> 'a t
 
   val get : Key.t list -> 'a t -> 'a option
