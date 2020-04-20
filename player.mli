@@ -2,7 +2,7 @@
 type t 
 
 (** [tile] represents the type of tiles contained in a players inventory *)
-type tile = Letter of char |  Blank 
+type tile
 
 (** [score p] is the score of a player [p]*)
 val score : t -> int
