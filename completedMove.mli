@@ -1,9 +1,14 @@
-(** [t] is the type representing a completed move*)
-type t
+module type LetterValueMap = sig 
+  type t
 
-(** [score m] is the integer score of the letters
-    placed for the completed move [m] *)
-val score : t -> int
+  val get : char -> int
+end 
 
-(** [words m] is the list of words formed for the completed move [m]  *)
-val words : t -> string list
+
+
+module CompletedMove : functor (LetterValue : LetterValueMap) -> sig
+  type t
+
+  val score : t -> int
+  val words : t -> string list
+end
