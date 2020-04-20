@@ -1,5 +1,8 @@
-type t = unit
-
 type tile = Letter of char |  Blank
 
-let next_tile = failwith "Unimplemented"
+type t = tile list
+
+let next_tile i = 
+  match i with
+  | h::t -> (Some h, t)
+  | [] -> (None, [])
