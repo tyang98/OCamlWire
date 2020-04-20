@@ -1,4 +1,4 @@
-MODULES= dictionary trieDictionary
+MODULES= dictionary trieDictionary board completedMove gameplay player proposedMove state test tileInventory
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
