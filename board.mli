@@ -21,4 +21,5 @@ val check_bonus : int -> int -> t -> bonus option
 val set_tile : int -> int -> char -> t -> t
 
 (** [size b] is the tuple representing (width, height) *)
-val size : t -> int * int
+(* ask chris about board specs *)
+val size : t -> int
