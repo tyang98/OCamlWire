@@ -10,9 +10,25 @@ module Make = functor (K : OrderedType) -> struct
 
   let empty = Node (None, Children.empty)
 
-  let insert word e t = failwith "Unimplemented"
+  let rec insert word e trie = 
+    let Node (cv, map) = trie in
+    match word with
+    | h::t -> begin
+        match Children.find_opt h map with
+        | None -> Node (cv,
+                        Children.add h
+                          (insert t e (Node (None, Children.empty))) map)
+        | Some n -> Node (cv, Children.add h (insert t e n) map)
+      end
+    | [] -> Node (Some e, map)
 
-  let get word t = failwith "Unimplemented"
+  let rec get word trie =
+    let Node (res, map) = trie in
+    match word with
+    | [] -> res
+    | h::t -> match Children.find_opt h map with
+      | None -> None
+      | Some subtrie -> get t subtrie
 
-  let check word t = failwith "Unimplemented"
+  let check word trie = get word trie |> Option.is_some
 end
