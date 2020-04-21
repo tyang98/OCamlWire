@@ -5,6 +5,8 @@ open TileInventory
 (** [t] is the type representing the gameplay *)
 type t
 
-val execute : ProposedMove.t -> t -> t * CompletedMove.t
+module CM : CompletedMove
 
-val query_tile : int -> int -> tile
+val execute : ProposedMove.t -> t -> t 
+
+val query_tile : int -> int -> tile * (CM.t option) 

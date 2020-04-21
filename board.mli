@@ -1,7 +1,7 @@
 (** [t] is the type representing a board*)
 type t
 
-(** [tile] is the type of a tile*)
+(** [tile] is the type of a tile *)
 type tile
 
 (** [bonus] is the type representing either a letter or word point bonus*)
