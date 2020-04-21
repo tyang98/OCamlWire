@@ -28,6 +28,6 @@ let completed_move_tests = [
 let tests = [
 ]
 
-let suite = "search test suite" >::: List.flatten [tests; completed_move_tests]
+let suite = "scrabble test suite" >::: List.flatten [tests; completed_move_tests]
 
 let _ = run_test_tt_main suite
