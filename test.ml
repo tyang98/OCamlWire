@@ -80,9 +80,7 @@ let trie_tests = [
                                     |> assert_equal (Some 50));
 ]
 
-
 module SCM = StandardCompletedMove.StandardCompletedMove
-
 
 let completed_move_scm_test (name : string) (cm : SCM.t ) (e : int) : test = 
   name >:: (fun _ -> assert_equal e (SCM.score cm) ~printer:(string_of_int)) 
@@ -170,11 +168,32 @@ let board_tests = [
                                 (set_tile 2 2 'H' board));
   "board size test" >:: (fun _ -> assert_equal 3 
                             (List.length board));
-
-
 ]
 
-let suite = "scrabble test suite" >::: List.flatten [tests; completed_move_tests; 
-                                                     trie_tests; board_tests]
+open Player
+
+let player_with_2_moves = 
+  Player.new_p |> Player.add_move totNoBonus |> Player.add_move totDoubleLetter
+let player_with_1_tile = 
+  Player.new_p |> Player.add_tile Blank
+
+let player_tests = [
+  "Player score test, multi moves" >:: (fun _ ->
+      assert_equal (Player.score player_with_2_moves) 7);
+  "New player has score 0" >:: (fun _ ->
+      assert_equal (Player.score Player.new_p) 0);
+  "New player has no tiles" >:: (fun _ ->
+      assert_equal (Player.tiles Player.new_p) []);
+  "Test tile adding" >:: (fun _ ->
+      assert_equal (Player.tiles player_with_1_tile |> List.length) 1);
+]
+
+let suite = "scrabble test suite" >::: List.flatten [
+    tests;
+    completed_move_tests; 
+    trie_tests;
+    board_tests;
+    player_tests;
+  ]
 
 let _ = run_test_tt_main suite
