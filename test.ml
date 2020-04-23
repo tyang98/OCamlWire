@@ -99,9 +99,8 @@ let completed_move_tests = [
     (SCM.from [("got", [('g', 3)], [])]) 8;
   completed_move_scm_test "Letter and word bonus"
     (SCM.from [("got", [('g', 3)], [2])]) 16;
-
   completed_move_scm_test "Two word test"
-    (SCM.from [("toe", [], [3]); ("ending", [('i', 2)], [3])]) 36
+    (SCM.from [("toe", [], [3]); ("ending", [('i', 2)], [3])]) 36;
 ]
 
 let tests = [

@@ -1,8 +1,9 @@
-MODULES= dictionary trieDictionary board completedMove gameplay player proposedMove state test tileInventory standardCompletedMove
+MODULES= dictionary trieDictionary board completedMove gameplay player proposedMove state test tileInventory standardCompletedMove main
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
 TEST=test.byte
+MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind 
 PKGS=unix,oUnit,str
 
@@ -10,7 +11,10 @@ default: build
 	utop
 
 build:
-	$(OCAMLBUILD) $(OBJECTS)
+	$(OCAMLBUILD) $(OBJECTS) $(MAIN)
+
+run:
+	$(OCAMLBUILD) $(OBJECTS) $(MAIN) && ./$(MAIN)
 
 test:
 	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST) -runner sequential
