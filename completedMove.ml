@@ -25,11 +25,11 @@ module Make =
       let rec add_bonus_letters 
           (bonus : (char * int) list) 
           (ls : (char * int) list) 
-
         : (char * int) list = 
         match bonus with
         | (l, b)::t -> begin 
-            (* Match along the letters in the words to see if it contains said letter *)
+            (* Match along the letters in the words to 
+               see if it contains said letter *)
             match List.assoc_opt l ls with 
             | Some r -> add_bonus_letters t ((l, r * (b - 1))::ls)
             | _ -> add_bonus_letters t ls
@@ -43,8 +43,7 @@ module Make =
           |> List.map (
             fun (chrs, lb, wb) -> 
               (* For each word, map each letter to its associated point value,
-                 then sum them
-              *)
+                 then sum them *)
               (List.map (fun x -> (x, LV.get x)) chrs 
                |> add_bonus_letters lb
                |> List.fold_left (fun x y -> x + snd y) 0, wb ))
