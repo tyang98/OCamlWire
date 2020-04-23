@@ -1,14 +1,14 @@
 (** [t] is the type representing a board*)
 type t 
 
-
 (** [bonus] is the type representing either a letter or word point bonus*)
-
 type bonus = WordBonus of int | LetterBonus of int * char
-
 
 (** [tile] is the type of a tile *)
 type tile = Filled of char | Bonus of bonus | Empty
+
+(** [board t] is the list representation of type [t] *)
+val board : t -> tile list list
 
 (** [init_board l s] is the board with size [s] x [s] *)
 val init_board : (int * int * bonus) list -> int -> t

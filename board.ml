@@ -5,6 +5,9 @@ type tile = Filled of char | Bonus of bonus | Empty
 
 type t = (tile list) list
 
+let board (t:t) : tile list list = 
+  t
+
 (** [bonus_extract bonus r c] is the tile of type Empty or Bonus located at
     row [r] and column [c] *)
 let bonus_extract bonus (r : int) (c : int) =

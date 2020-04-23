@@ -33,3 +33,6 @@ let rec update_board move t =
 let execute move t = failwith "unimplemented"
 
 let query_tile x y t = Board.query_tile x y t.board
+
+let obtain_board t = 
+  t.board
