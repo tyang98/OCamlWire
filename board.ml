@@ -12,13 +12,16 @@ let bonus_extract bonus (r : int) (c : int) =
   | [] -> Empty
   | (_,_,c)::t -> Bonus c
 
-(** [tile_list_help bonuses r c list] is the list of tiles with *)
+(** [tile_list_help bonuses r c list] is the list of tiles with bonuses
+    located on tiles in column [c]*)
 let rec tile_list_help (bonuses : (int * int * bonus) list) 
     (r : int) (c : int) (list : tile list) : tile list =
   match c with 
   | 0 -> list
   | _ -> (bonus_extract bonuses r c)::(tile_list_help bonuses r (c - 1) list)
 
+(** [init_board_help bonuses size_r size_c list] is the list of tile lists 
+    with [size_r] rows and [size_c] columns with bonuses placed onto [list] *)
 let rec init_board_help (bonuses : (int * int * bonus) list) (size_r : int) 
     (size_c : int) (list : tile list list) : tile list list = 
   match size_r with 
@@ -28,7 +31,6 @@ let rec init_board_help (bonuses : (int * int * bonus) list) (size_r : int)
 
 let rec init_board bonuses size = 
   init_board_help bonuses size size [] |> List.rev
-
 
 (* Board Config:
    Double Letter Score:
