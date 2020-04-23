@@ -104,10 +104,8 @@ let completed_move_tests = [
 ]
 
 let tests = [
+
 ]
-
-
-
 
 let board_tests = [
 

@@ -26,6 +26,6 @@ module type CompletedMove = sig
   val from : (string * (char * int) list * int list) list -> t
 end
 
-(** [Make LetterVal] creates a CompletedMove from a LetterValueMap.  The created
+(** [Make LetterVal] creates a CompletedMove from a LetterValueMap. The created
     CompletedMove module will use LetterVal to get values of letters *)
 module Make : functor (LetterVal : LetterValueMap) -> CompletedMove
