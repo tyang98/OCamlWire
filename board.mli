@@ -7,6 +7,8 @@ type tile
 (** [bonus] is the type representing either a letter or word point bonus*)
 type bonus
 
+val init_board : (int * int * bonus) list -> int -> t
+
 (** [query_tile r c b] is [Some] tile located in row [r] and column [c] on board
     [b] if there is a tile in [r] [c], otherwise is [None] if there is no tile
     in [r] [c] *)
@@ -21,5 +23,4 @@ val check_bonus : int -> int -> t -> bonus option
 val set_tile : int -> int -> char -> t -> t
 
 (** [size b] is the tuple representing (width, height) *)
-(* ask chris about board specs *)
-val size : t -> int
+val size : t -> int * int
