@@ -5,7 +5,8 @@ type t
 type tile
 
 (** [bonus] is the type representing either a letter or word point bonus*)
-type bonus
+
+type bonus = WordBonus of int | LetterBonus of int * char
 
 (** [init_board l s] is the board with size [s] x [s] *)
 val init_board : (int * int * bonus) list -> int -> t
