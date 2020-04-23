@@ -1,6 +1,6 @@
 B _build
 PKG oUnit
+PKG ANSITerminal
 PKG str
 PKG unix
 PKG ocamlbuild
-PKG ANSITerminal

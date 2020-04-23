@@ -26,34 +26,14 @@ let rec fill_row bonuses (size : int) (row : int) (l : tile list) : tile list =
 
 (** [recurse_out bonuses size l] is a list of tile lists, each of which are
     filled with either empty spaces or bonuses *)
-let rec recurse_out bonuses (total: int) (size : int) (l : tile list list) : tile list list =
+let rec recurse_out bonuses (total: int) (size : int) 
+    (l : tile list list) : tile list list =
   match size with 
   | 0 -> l
   | _ -> recurse_out bonuses total (size - 1) 
            ((fill_row bonuses total size [])::l)
 
 let rec init_board bonuses size = recurse_out bonuses size size []
-
-(* Board Config:
-   Double Letter Score:
-   (1,4)  (3,7) (4,1)  (7,3) (8,4)  (9,3) (12,1) (13,7) (15,4) 
-   (1,12) (3,9) (4,8)  (7,7) (8,12) (9,7) (12,8) (13,9) (15,12)
-                (4,15) (7,9)        (9,9) (12,15)
-                       (7,13)       (9,13)
-   Double Word Score:
-   (2,2)  (3,3)  (4,4)  (5,5)  (11,5)  (12,4)  (13,3)  (14,2)
-   (2,14) (3,13) (4,12) (5,11) (11,11) (12,12) (13,13) (14,14) 
-
-   Triple Letter Score:
-   (2,6)   (6,2)  (10,2)  (14,6)
-   (2,10)  (6,6)  (10,6)  (14,10)
-          (6,10) (10,10)
-          (6,14) (10,14) 
-   Triple Word Score:
-   (1,1)  (8,1)  (15,1)
-   (1,8)  (8,15) (15,8)
-   (1,15)        (15,15)
-*)
 
 let query_tile r c b =  
   match List.nth_opt b r with 

@@ -1,1 +1,1 @@
-true: package(unix), package(oUnit), package(qcheck), package(str)
+true: package(unix), package(oUnit), package(qcheck), package(str), package(ANSITerminal)
