@@ -6,6 +6,12 @@ type t = {
   direct : direction;
 }
 
+let create dir loc l = {
+  letter = l;
+  direct = dir;
+  current_loc = loc;
+}
+
 let letters m = 
   m.letter
 

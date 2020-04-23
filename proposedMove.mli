@@ -2,7 +2,9 @@
 type t 
 
 (** The type of directions representing either across or down *)
-type direction 
+type direction = Across | Down
+
+val create : direction -> int * int -> char list -> t
 
 (** [letters m] is the list of characters representing each letter used 
     for proposed move [m]. *)
