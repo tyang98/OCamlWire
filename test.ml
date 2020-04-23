@@ -113,6 +113,11 @@ let b = init_board [] 15
 
 let b2 = init_board bonuses 15
 
+let b_with_letter = b 
+                    |> Board.set_tile 0 0 'a' 
+                    |> Board.set_tile 0 14 'b' 
+                    |> Board.set_tile 14 14 'c'
+                    |> Board.set_tile 14 0 'd'
 
 let board_tests = [
   "Test board of size 15 is actually size 15" >:: (fun _ ->
@@ -121,6 +126,14 @@ let board_tests = [
       assert_equal (Board.check_bonus 0 0 b2) (Some (WordBonus 0)));
   "Test bonus in 1, 2" >:: (fun _ ->
       assert_equal (Board.check_bonus 1 2 b2) (Some (WordBonus 3)));
+  "Test letters in 0,0" >:: (fun _ -> 
+      assert_equal (Board.query_tile 0 0 b_with_letter) (Some (Filled 'a')));
+  "Test letters in 0,15" >:: (fun _ -> 
+      assert_equal (Board.query_tile 0 14 b_with_letter) (Some (Filled 'b')));
+  "Test letters in 0,0" >:: (fun _ -> 
+      assert_equal (Board.query_tile 14 14 b_with_letter) (Some (Filled 'c')));
+  "Test letters in 0,0" >:: (fun _ -> 
+      assert_equal (Board.query_tile 14 0 b_with_letter) (Some (Filled 'd')));
 ]
 
 open Player

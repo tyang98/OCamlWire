@@ -10,27 +10,26 @@ type t = (tile list) list
 let bonus_extract bonus (r : int) (c : int) =
   match bonus |> List.filter (fun (a, b, _) -> r = a && c = b) with
   | [] -> Empty
-  | (_,_,c)::t -> Bonus c
+  | (_,_,c)::_ -> Bonus c
 
-(** [tile_list_help bonuses r c list] is the list of tiles with bonuses
-    located on tiles in column [c]*)
-let rec tile_list_help (bonuses : (int * int * bonus) list) 
-    (r : int) (c : int) (list : tile list) : tile list =
-  match c with 
-  | 0 -> list
-  | _ -> (bonus_extract bonuses r c)::(tile_list_help bonuses r (c - 1) list)
+(** [fill_row bonuses size row l] is a list of tiles which are either empty or
+    filled with bonuses based on the supplied bonuses list, and the [row] 
+    supplied *)
+let rec fill_row bonuses (size : int) (row : int) (l : tile list) : tile list =
+  match size with 
+  | 0 -> l
+  | _ -> fill_row bonuses (size - 1) row 
+           ((bonus_extract bonuses (row - 1) (size - 1))::l)
 
-(** [init_board_help bonuses size_r size_c list] is the list of tile lists 
-    with [size_r] rows and [size_c] columns with bonuses placed onto [list] *)
-let rec init_board_help (bonuses : (int * int * bonus) list) (size_r : int) 
-    (size_c : int) (list : tile list list) : tile list list = 
-  match size_r with 
-  | 0 -> list 
-  | r -> (List.rev (tile_list_help bonuses r size_c []))
-         ::(init_board_help bonuses (r - 1) size_c list)
+(** [recurse_out bonuses size l] is a list of tile lists, each of which are
+    filled with either empty spaces or bonuses *)
+let rec recurse_out bonuses (total: int) (size : int) (l : tile list list) : tile list list =
+  match size with 
+  | 0 -> l
+  | _ -> recurse_out bonuses total (size - 1) 
+           ((fill_row bonuses total size [])::l)
 
-let rec init_board bonuses size = 
-  init_board_help bonuses size size [] |> List.rev
+let rec init_board bonuses size = recurse_out bonuses size size []
 
 (* Board Config:
    Double Letter Score:
@@ -71,8 +70,8 @@ let check_bonus r c b =
 
 let set_tile r c l b = 
   List.mapi (fun addr outer_list -> if addr = r 
-              then List.mapi (fun addr inner_list -> if addr = c then Filled l
-                               else inner_list) outer_list
+              then List.mapi (fun addr ch -> if addr = c then Filled l
+                               else ch) outer_list
               else outer_list) b
 
 let size b = 
