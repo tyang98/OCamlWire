@@ -11,3 +11,5 @@ val execute : ProposedMove.t -> t -> t * (CM.t option)
 val query_tile : int -> int -> t -> Board.tile option
 
 val obtain_board : t -> Board.t
+
+val make_gameplay : Board.t -> WordChecker.t -> t

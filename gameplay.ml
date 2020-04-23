@@ -5,6 +5,8 @@ type t = {
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
+let make_gameplay b c = {board = b; checker = c}
+
 let is_inside (in_x, in_y) (out_x, out_y) =
   in_x >= 0 && in_x < out_x && in_y >= 0 && in_y < out_y
 
@@ -36,3 +38,4 @@ let query_tile x y t = Board.query_tile x y t.board
 
 let obtain_board t = 
   t.board
+
