@@ -9,10 +9,11 @@ let shuffle ls =
 
 let from_file path = 
   let get_line file = try Some (input_line file) with End_of_file -> None in
+  let to_tile (c : char) = if c = '_' then Blank else Letter c in
   let file = open_in path in
   let rec loop acc =
     match get_line file with
-    | Some line when not (0 = String.length line) -> line::acc
+    | Some line when not (0 = String.length line) -> (line.[0] |> to_tile)::acc
     | _ -> acc
   in
   let tiles = loop [] in
