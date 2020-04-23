@@ -106,11 +106,19 @@ let completed_move_tests = [
 let tests = [
 ]
 
+let bonuses = [(0, 0, WordBonus 0); (1, 2, WordBonus 3)]
 
+let b = init_board [] 15
 
+let b2 = init_board bonuses 15
 
 let board_tests = [
-
+  "Test board of size 15 is actually size 15" >:: (fun _ ->
+      assert_equal (Board.size b) (15, 15));
+  "Test bonus in 0, 0" >:: (fun _ ->
+      assert_equal (Board.check_bonus 0 0 b2) (Some (WordBonus 0)));
+  "Test bonus in 1, 2" >:: (fun _ ->
+      assert_equal (Board.check_bonus 1 2 b2) (Some (WordBonus 3)));
 ]
 
 open Player
