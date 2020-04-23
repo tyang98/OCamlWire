@@ -8,6 +8,7 @@ type tile
 
 type bonus = WordBonus of int | LetterBonus of int * char
 
+(** [init_board l s] is the board with size [s] x [s] *)
 val init_board : (int * int * bonus) list -> int -> t
 
 (** [query_tile r c b] is [Some] tile located in row [r] and column [c] on board
