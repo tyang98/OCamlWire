@@ -19,7 +19,8 @@ let load_from_file path =
   let file = open_in path in
   let rec loop acc =
     match get_line file with
-    | Some line when not (0 = String.length line) -> Dict.insert line () acc
+    | Some line when not (0 = String.length line) ->
+      Dict.insert (String.lowercase_ascii line) () acc |> loop
     | _ -> acc
   in
   let dict = loop Dict.empty in
