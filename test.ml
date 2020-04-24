@@ -80,6 +80,21 @@ let trie_tests = [
                                     |> assert_equal (Some 50));
 ]
 
+let () = print_endline "starting dictionary load"
+let wc = WordChecker.load_from_file "scrabble.txt"
+let () = print_endline "finished dictionary load"
+
+let make_wc_test word =
+  word >:: (fun _ -> WordChecker.check word wc
+                     |> assert_equal true ~printer:(string_of_bool))
+
+let word_checker_tests = [
+  make_wc_test "abacuses";
+  make_wc_test "octopus";
+  make_wc_test "aa";
+  make_wc_test "zzzs"
+]
+
 module SCM = StandardCompletedMove.StandardCompletedMove
 
 let completed_move_scm_test (name : string) (cm : SCM.t ) (e : int) : test = 
@@ -160,6 +175,7 @@ let suite = "scrabble test suite" >::: List.flatten [
     trie_tests;
     board_tests;
     player_tests;
+    word_checker_tests;
   ]
 
 let _ = run_test_tt_main suite
