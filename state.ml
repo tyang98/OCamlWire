@@ -10,6 +10,9 @@ type t = {
   tiles : TileInventory.t;
 }
 
+let execute move t = Gameplay.execute move t.gameplay
+                     |> Option.map (fun g -> { t with gameplay = fst g; })
+
 (** [make_players playerc ps] is a list of [Player.new_p] with a length of 
     playerc *)
 let rec make_players playerc ps = match playerc with
