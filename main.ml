@@ -25,7 +25,7 @@ let parse move = let l = String.split_on_char ' ' move in
 
 let rec turn state =
   State.board_printer state;
-  print_string "move > ";
+  print_string "\n move > ";
   match read_line () with
   | exception End_of_file -> ()
   | move -> match parse move with
@@ -39,7 +39,7 @@ let rec turn state =
 let main () = 
   ANSITerminal.(
     print_string [red; Bold]
-      "\n\n Welcome to OScrabble, a functional implementation of Scrabble.\n"
+      "\n\n Welcome to OScrabble, a functional implementation of Scrabble. \n\n"
   );
   let start = State.init_state 1 in
   turn start

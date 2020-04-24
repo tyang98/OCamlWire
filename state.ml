@@ -88,7 +88,7 @@ let tile_printer (tile : Board.tile) =
   match tile with 
   | Filled c -> print_string ((Char.escaped c) ^ " ")
   | Bonus b -> bonus_printer b
-  | Empty -> print_string "##"
+  | Empty -> print_string "()"
 
 (** [list_printer lst] is the string representation of the list [lst] *)
 let rec list_printer lst = 
