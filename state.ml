@@ -91,12 +91,22 @@ let tile_printer (tile : Board.tile) =
   | Empty -> print_string "()"
 
 (** [list_printer lst] is the string representation of the list [lst] *)
-let rec list_printer lst = 
-  match lst with 
-  | [] -> print_string "\n"
-  | h::t -> tile_printer h; print_string  " "; list_printer t
+let rec list_printer i lst = 
+  i |> string_of_int |> print_string;
+  if i < 10 then print_string "  " else print_string " ";
+  List.iter (fun a -> tile_printer a; print_string " ") lst;
+  print_string "\n"
+(* match lst with  *)
+(* | [] -> print_string "\n" *)
+(* | h::t -> tile_printer h; print_string  " "; list_printer (i - 1) t *)
 
 let board_printer s = 
   let gameplay = s.gameplay in
   let game_board = Gameplay.obtain_board gameplay in
-  List.iter (fun lists -> list_printer lists) (game_board |> Board.board)
+  print_string "   ";
+  for i = 0 to (Board.size game_board |> snd) - 1 do 
+    i |> string_of_int |> print_string;
+    if i < 10 then print_string "  " else print_string " "
+  done;
+  print_string "\n";
+  List.iteri (fun i lists -> list_printer i lists) (game_board |> Board.board)
