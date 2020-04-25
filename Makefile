@@ -6,6 +6,7 @@ TEST=test.byte
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind 
 PKGS=unix,oUnit,str, ANSITerminal
+GIT_HASH=$(shell git log --pretty=format:'%h' -n 1)
 
 default: build
 	utop
@@ -15,6 +16,9 @@ build:
 
 run:
 	$(OCAMLBUILD) $(OBJECTS) $(MAIN) && ./$(MAIN)
+
+zip:
+	zip OScrabble-$(GIT_HASH).zip *.ml* _tags Makefile  *.txt *.md
 
 test:
 	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST) -runner sequential
