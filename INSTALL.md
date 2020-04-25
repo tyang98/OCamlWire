@@ -1,6 +1,7 @@
 # Installation
 
 1.  After opening the zip file, type ``make run`` in the terminal to build our system.
+This should start our game by loading an empty scrabble board.
 
 # Gameplay
 
