@@ -13,5 +13,5 @@ For example, ``2 3 a orange``
 
 The ``row`` input ranges from __0__  to __14__.
 The ``column`` input ranges from __0__ to __14__.
-The ``direction`` input ranges is either __a__ (Across) or __d__ (Down)/ 
+The ``direction`` input ranges is either __a__ (Across) or __d__ (Down).
 The ``word`` input can be either a single letter or many letters in succession.
