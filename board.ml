@@ -1,7 +1,7 @@
 
-type bonus = WordBonus of int | LetterBonus of int * char
+type bonus = WordBonus of int | LetterBonus of int * char | Start 
 
-type tile = Filled of char | Bonus of bonus | Empty
+type tile = Filled of char | Bonus of bonus | Empty 
 
 type t = (tile list) list
 
