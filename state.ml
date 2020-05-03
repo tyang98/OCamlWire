@@ -73,7 +73,9 @@ let bonus_printer (bonus : Board.bonus) =
 (** [tile_printer tile] is the string representation of a tile *)
 let tile_printer (tile : Board.tile) = 
   match tile with 
-  | Filled c -> print_string ((Char.escaped c) ^ " ")
+  | Filled c -> ANSITerminal.(print_string [green; Bold] 
+                                (((Char.escaped c) |> 
+                                  String.uppercase_ascii) ^ " "))
   | Bonus b -> bonus_printer b
   | Empty -> print_string "()"
 
