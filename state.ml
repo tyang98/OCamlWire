@@ -15,9 +15,16 @@ type t = {
 (** [give_move move players i] gives a completed move [move] to a player in 
     [players] at index [t] and returns the updated list *)
 let give_move (move : Gameplay.CM.t) (players : Player.t list) (i : int) : Player.t list =
-  List.mapi (fun  index player -> if (index = i) then Player.add_move move player else player) players
-let execute (move : ProposedMove.t) (e : t) = Gameplay.execute move e.gameplay
-                                              |> Option.map (fun (g, m) -> { e with gameplay = g; players = give_move m e.players e.current;})
+  List.mapi (fun  index player -> 
+      if (index = i) then Player.add_move move player else player
+    ) players
+
+
+let execute (move : ProposedMove.t) (e : t) = 
+  Gameplay.execute move e.gameplay
+  |> Option.map (fun (g, m) -> 
+      { e with gameplay = g; players = give_move m e.players e.current;}
+    )
 
 
 
@@ -110,3 +117,36 @@ let whose_turn s = s.current
 
 let increment_turn s = 
   {s with current = (s.current + 1) mod (List.length s.players)}
+
+(** [get_n_tiles i n acc] is a list of tiles appended to [acc].  If there 
+    are enough tiles left in [i], then [n] tiles will be 
+    appended to [acc].  If there are not enough tiles left in [i], then 
+    the remaining tiles left in [i] will be appended to [Some acc].  If there 
+    are no tiles left at all, then we return [None].  Always pass [[]] to this
+    function *)
+let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list) 
+  : TileInventory.t * (tile list option)  = 
+  match n with 
+  | 0 -> if List.length acc = 0 then i, None else  i, Some acc
+  | _ -> begin 
+      match TileInventory.next_tile i with
+      | Some tile, i' -> get_n_tiles i' (n - 1) (tile::acc)
+      | None, _ -> get_n_tiles i 0 acc
+    end
+
+let give_player_tiles pl i tiles = 
+  List.mapi (fun iter player 
+              -> if (i = iter) then 
+                  List.fold_left (fun (p : Player.t) (t : tile) -> Player.add_tile t p) player tiles
+                else player
+            ) pl
+
+let grab_tile s n = 
+  let tile_inventory', tiles = get_n_tiles s.tiles n [] in 
+  match tiles with
+  | Some tile_list -> {s with 
+                       players = 
+                         give_player_tiles s.players s.current tile_list; 
+                       tiles = tile_inventory'
+                      }
+  | None -> s

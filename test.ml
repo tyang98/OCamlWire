@@ -1,7 +1,8 @@
 open OUnit2
 open TrieDictionary
 open Board
-
+open TileInventory
+open Player
 
 let string_to_list s = List.init (String.length s) (String.get s)
 

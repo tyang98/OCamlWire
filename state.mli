@@ -16,3 +16,7 @@ val board_printer : t -> unit
 
 (** [whose_turn s] is the number of the player whose turn it is*)
 val whose_turn : t -> int
+
+(** [grab_tile s n] is the current state updated where the current player has 
+    taken [n] tiles from the [TileInventory] *)
+val grab_tile : t -> int -> t

@@ -1,4 +1,4 @@
-type tile = Letter of char |  Blank
+type tile = Letter of char | Blank
 
 type t = tile list
 
