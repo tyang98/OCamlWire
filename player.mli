@@ -4,14 +4,14 @@ type t
 (** [tile] represents the type of tiles contained in a players inventory *)
 type tile = Letter of char | Blank
 
-module CM : CompletedMove.CompletedMove
+module CM = StandardCompletedMove.StandardCompletedMove
 
 (** [add le p] is a player with all the same tiles as [p] in addition to [le] *)
 val add_tile : tile -> t -> t
 
 (** [add_move move p] is a player with all the same moves as p with
     the addition of [p] *)
-val add_move : StandardCompletedMove.StandardCompletedMove.t -> t -> t
+val add_move : CM.t -> t -> t
 
 (** [score p] is the score of a player [p]*)
 val score : t -> int

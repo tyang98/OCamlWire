@@ -10,14 +10,21 @@ type t = {
   tiles : TileInventory.t;
 }
 
-let execute move t = Gameplay.execute move t.gameplay
-                     |> Option.map (fun g -> { t with gameplay = fst g; })
+(** [give_move move players i] gives a completed move [move] to a player in 
+    [players] at index [t] and returns the updated list *)
+let give_move (move : Gameplay.CM.t) (players : Player.t list) (i : int) : Player.t list =
+  List.mapi (fun  index player -> if (index = i) then Player.add_move move player else player) players
+let execute (move : ProposedMove.t) (e : t) = Gameplay.execute move e.gameplay
+                                              |> Option.map (fun (g, m) -> { e with gameplay = g; players = give_move m e.players e.current;})
+
+
 
 (** [make_players playerc ps] is a list of [Player.new_p] with a length of 
     playerc *)
 let rec make_players playerc ps = match playerc with
   | 0 -> ps
   | _ -> make_players (playerc - 1) (Player.new_p::ps)
+
 
 
 (* Board Config:
@@ -110,3 +117,8 @@ let board_printer s =
   done;
   print_string "\n";
   List.iteri (fun i lists -> list_printer i lists) (game_board |> Board.board)
+
+let whose_turn s = s.current
+
+let increment_turn s = 
+  {s with current = (s.current + 1) mod (List.length s.players)}
