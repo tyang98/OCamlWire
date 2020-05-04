@@ -1,6 +1,9 @@
+open Gameplay
+
 module CM = StandardCompletedMove.StandardCompletedMove
 
-type tile = Letter of char | Blank
+type tile = TileInventory.tile
+
 
 type t = (CM.t list) * (tile list)
 

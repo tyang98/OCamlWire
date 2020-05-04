@@ -1,7 +1,8 @@
 open OUnit2
 open TrieDictionary
 open Board
-
+open TileInventory
+open Player
 
 let string_to_list s = List.init (String.length s) (String.get s)
 
@@ -80,10 +81,10 @@ let trie_tests = [
                                     |> assert_equal (Some 50));
 ]
 
-let () = print_endline "starting dictionary load"
-let wc = WordChecker.load_from_file "scrabble.txt"
-let () = print_endline "finished dictionary load"
-
+(* let () = print_endline "starting dictionary load"
+   let wc = WordChecker.load_from_file "scrabble.txt"
+   let () = print_endline "finished dictionary load" *)
+(* 
 let make_wc_test word =
   word >:: (fun _ -> WordChecker.check word wc
                      |> assert_equal true ~printer:(string_of_bool))
@@ -93,7 +94,7 @@ let word_checker_tests = [
   make_wc_test "octopus";
   make_wc_test "aa";
   make_wc_test "zzzs"
-]
+] *)
 
 module SCM = StandardCompletedMove.StandardCompletedMove
 
@@ -149,6 +150,7 @@ let board_tests = [
       assert_equal (Board.query_tile 14 14 b_with_letter) (Some (Filled 'c')));
   "Test letters in 0,0" >:: (fun _ -> 
       assert_equal (Board.query_tile 14 0 b_with_letter) (Some (Filled 'd')));
+
 ]
 
 open Player
@@ -169,13 +171,56 @@ let player_tests = [
       assert_equal (Player.tiles player_with_1_tile |> List.length) 1);
 ]
 
+let state_tests = [
+  "Test turn incrementing works correctly" >:: (fun _ -> 
+      assert_equal (State.init_state 4 
+                    |> State.increment_turn 
+                    |> State.increment_turn 
+                    |> State.whose_turn) (2));
+  "Test turn incrementing wrap around works" >:: (fun _ -> 
+      assert_equal (State.init_state 4 
+                    |> State.increment_turn 
+                    |> State.increment_turn 
+                    |> State.increment_turn
+                    |> State.increment_turn 
+                    |> State.whose_turn) (0));
+]
+
+open TileInventory
+
+let tile_inventory_tests = [
+  "Test loading from file" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> fst) (Some (Blank)));
+  "Test loading from file and taking second" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> fst) (Some (Blank)));
+
+  "Test loading from file and almost depleating" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> fst) (Some (Blank)));
+  "Test loading from file and depleating" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> fst) (None));
+]
+
 let suite = "scrabble test suite" >::: List.flatten [
     tests;
     completed_move_tests; 
     trie_tests;
     board_tests;
     player_tests;
-    word_checker_tests;
+    (* word_checker_tests; *)
+    state_tests;
+    tile_inventory_tests;
   ]
 
 let _ = run_test_tt_main suite
