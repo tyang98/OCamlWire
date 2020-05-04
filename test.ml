@@ -156,7 +156,7 @@ let board_tests = [
 open Player
 
 let player_with_2_moves = 
-  Player.new_p |> Player.add_move totNoBonus |> Player.add_move totDoubleLetter
+  Player.new_p |> Player.add_score 3 |> Player.add_score 4
 let player_with_1_tile = 
   Player.new_p |> Player.add_tile Blank
 

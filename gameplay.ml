@@ -97,3 +97,4 @@ let query_tile x y t = Board.query_tile x y t.board
 let obtain_board t = 
   t.board
 
+let current_score b = b.score

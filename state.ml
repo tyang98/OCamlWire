@@ -14,17 +14,21 @@ type t = {
 
 (** [give_move move players i] gives a completed move [move] to a player in 
     [players] at index [t] and returns the updated list *)
-let give_move (move : Gameplay.CM.t)
+let give_score (amount : int)
     (players : Player.t list) (i : int) : Player.t list =
   List.mapi (fun  index player -> 
-      if (index = i) then Player.add_move move player else player
+      if (index = i) then Player.add_score amount player else player
     ) players
 
 
 let execute (move : ProposedMove.t) (e : t) = 
   Gameplay.execute move e.gameplay
-  |> Option.map (fun (g, m) -> 
-      { e with gameplay = g; players = give_move m e.players e.current;}
+  |> Option.map (fun (gn, score') -> 
+      let score_diff = score' - (Gameplay.current_score e.gameplay) in
+      { 
+        e with gameplay = gn; 
+               players = give_score score_diff e.players e.current;
+      }
     )
 
 (** [make_players playerc ps] is a list of [Player.new_p] with a length of 

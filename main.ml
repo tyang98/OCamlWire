@@ -30,8 +30,12 @@ let parse move = let l = String.split_on_char ' ' move in
 
 (** TODO: Document *)
 let rec turn state =
+
   print_endline ("Current Turn: Player " 
                  ^ (state |> State.whose_turn |> string_of_int));
+  print_string "Your Score: "; 
+  (State.whose_turn state |> State.get_player state |> Player.score 
+   |> string_of_int |> print_string); print_newline ();
   State.board_printer state;
   print_endline ("Your tiles: " ^ 
                  (

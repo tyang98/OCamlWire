@@ -9,9 +9,8 @@ module CM = StandardCompletedMove.StandardCompletedMove
 (** [add le p] is a player with all the same tiles as [p] in addition to [le] *)
 val add_tile : tile -> t -> t
 
-(** [add_move move p] is a player with all the same moves as p with
-    the addition of [p] *)
-val add_move : CM.t -> t -> t
+(** [add_move amount p] is a player with [amount] added to their score*)
+val add_score : int -> t -> t
 
 (** [score p] is the score of a player [p]*)
 val score : t -> int

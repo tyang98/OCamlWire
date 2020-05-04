@@ -5,14 +5,14 @@ module CM = StandardCompletedMove.StandardCompletedMove
 type tile = TileInventory.tile
 
 
-type t = (CM.t list) * (tile list)
+type t = (int) * (tile list)
 
-let new_p = ([], [])
+let new_p = (0, [])
 
 let add_tile le p = p |> fun (moves, tiles) -> (moves, le::tiles)
 
-let add_move move p = p |> fun (moves, tiles) -> (move::moves, tiles)
+let add_score amount p = p |> fun (score, tiles) -> (score + amount, tiles)
 
-let score p = List.fold_left (fun a b -> CM.score b + a) 0 (fst p)
+let score p = fst p
 
 let tiles p = snd p

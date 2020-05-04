@@ -19,3 +19,6 @@ val obtain_board : t -> Board.t
 
 (** [make_gameplay b w] is a gameplay with a board [b] and a WordChecker [w]*)
 val make_gameplay : Board.t -> WordChecker.t -> t
+
+(** [current_score g] is the total current score of the gameplay [g]*)
+val current_score : t -> int
