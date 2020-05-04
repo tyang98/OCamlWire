@@ -6,9 +6,9 @@ type t
 
 module CM : CompletedMove
 
-(** [execute pm t] is Some (t * CompletedMove.t) if the proposed move is 
+(** [execute pm t] is Some (t * int) if the proposed move is 
     valid, otherwise is None*)
-val execute : ProposedMove.t -> t -> (t * CM.t) option 
+val execute : ProposedMove.t -> t -> (t * int) option
 
 (** [query_tile r c g] is Some tile if there is a tile in [r] [c] on [b], 
     otherwise is None*)

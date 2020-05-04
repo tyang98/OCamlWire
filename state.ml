@@ -11,7 +11,7 @@ type t = {
 }
 
 let execute move t = Gameplay.execute move t.gameplay
-                     |> Option.map (fun g -> { t with gameplay = fst g; })
+                     |> Option.map (fun g -> print_int (snd g); print_newline; { t with gameplay = fst g; })
 
 (** [make_players playerc ps] is a list of [Player.new_p] with a length of 
     playerc *)
