@@ -2,7 +2,7 @@
 type t 
 
 (** [tile] represents the type of tiles contained in a players inventory *)
-type tile = Letter of char | Blank
+type tile = TileInventory.tile
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
