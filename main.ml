@@ -6,11 +6,13 @@ open Gameplay
 open State
 open ProposedMove
 
-(** TODO: Document *)
+(** [player_parse] is the integer representing the number of players
+    playing the game. *)
 let player_parse number = 
   number |> int_of_string
 
-(** TODO: Document *)
+(** [parse move] is the ProposedMove submitted by the user based on a 
+    x and y coordinate location, direction, and word. *)
 let parse move = let l = String.split_on_char ' ' move in
   let x = l |> List.hd |> int_of_string in
   let l = List.tl l in
@@ -28,9 +30,10 @@ let parse move = let l = String.split_on_char ' ' move in
   ProposedMove.create dir (x, y)
     (List.init (String.length word) (String.get word))
 
-(** TODO: Document *)
+(** [turn state] is the function that runs each turn of the game. Each
+    turn includes placing new letters on the board and returning an associated
+    score for each player's respective moves  *)
 let rec turn state =
-
   ANSITerminal.(print_string [red;Bold] "Current Turn: " );
   print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int));
   ANSITerminal.(print_string [red; Bold] "Your Score: "); 
@@ -53,7 +56,8 @@ let rec turn state =
         turn state
       | Some ns -> ns |> State.increment_turn |> turn
 
-(** TODO: Document *)
+(** [player_count] prompts the user to enter the number of players that
+    will play the game. *)
 let rec player_count n = 
   match n > 0 with
   | false -> ANSITerminal.(
@@ -65,7 +69,8 @@ let rec player_count n =
     print_endline " ";
     turn start
 
-(** TODO: Document *)
+(** [main ()] prompts for user to play OScrabble, asks the user for the number 
+    of players for game, and then starts it. *)
 let main () = 
   ANSITerminal.(
     print_string [red; Bold]
