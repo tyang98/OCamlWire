@@ -30,7 +30,14 @@ let parse move = let l = String.split_on_char ' ' move in
 
 (** TODO: Document *)
 let rec turn state =
+  print_endline ("Current Turn: Player " 
+                 ^ (state |> State.whose_turn |> string_of_int));
   State.board_printer state;
+  print_endline ("Your tiles: " ^ 
+                 (
+                   state |> State.whose_turn |> State.get_player state 
+                   |> Player.tiles |> List.map TileInventory.string_of_tile 
+                   |> List.fold_left (fun a b -> a ^ b ^ ";") ""));
   print_string "\n move > ";
   match read_line () with
   | exception End_of_file -> ()
@@ -40,7 +47,7 @@ let rec turn state =
     | pm -> State.execute pm state |> function
       | None -> ANSITerminal.(print_string [red] "Move not allowed\n");
         turn state
-      | Some ns -> turn ns
+      | Some ns -> ns |> State.increment_turn |> turn
 
 (** TODO: Document *)
 let rec player_count n = 
@@ -50,7 +57,7 @@ let rec player_count n =
         "\n Please enter a valid player count: "
     );
     player_count (read_line () |> player_parse)
-  | true -> let start = State.init_state 1 in
+  | true -> let start = State.init_state n in
     print_endline " ";
     turn start
 

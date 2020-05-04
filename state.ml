@@ -34,6 +34,44 @@ let rec make_players playerc ps = match playerc with
   | 0 -> ps
   | _ -> make_players (playerc - 1) (Player.new_p::ps)
 
+
+(** [get_n_tiles i n acc] is a list of tiles appended to [acc].  If there 
+    are enough tiles left in [i], then [n] tiles will be 
+    appended to [acc].  If there are not enough tiles left in [i], then 
+    the remaining tiles left in [i] will be appended to [Some acc].  If there 
+    are no tiles left at all, then we return [None].  Always pass [[]] to this
+    function *)
+let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list) 
+  : TileInventory.t * (tile list option)  = 
+  match n with 
+  | 0 -> if List.length acc = 0 then i, None else  i, Some acc
+  | _ -> begin 
+      match TileInventory.next_tile i with
+      | Some tile, i' -> get_n_tiles i' (n - 1) (tile::acc)
+      | None, _ -> get_n_tiles i 0 acc
+    end
+
+let give_player_tiles pl i tiles = 
+  List.mapi (fun iter player 
+              -> if (i = iter) then 
+                  List.fold_left (fun (p : Player.t) (t : tile) -> Player.add_tile t p) player tiles
+                else player
+            ) pl
+
+let grab_tile s n pn = 
+  let tile_inventory', tiles = get_n_tiles s.tiles n [] in 
+  match tiles with
+  | Some tile_list -> {s with 
+                       players = 
+                         give_player_tiles s.players pn tile_list; 
+                       tiles = tile_inventory'
+                      }
+  | None -> s
+
+let get_player s pn = match List.nth_opt s.players pn with
+  | Some p -> p
+  | None -> failwith "Precondition violated: No such player"
+
 let init_state player = 
   let start = [
     (0,0, WordBonus 3); (0,3, LetterBonus (2,' ')); (0,7, WordBonus 3); 
@@ -61,13 +99,13 @@ let init_state player =
     (13,9, LetterBonus (3,' ')); (13,13, WordBonus 2);  
     (14,0, WordBonus 3); (14,3, LetterBonus (2,' '));(14,7, WordBonus 3); 
     (14,11, LetterBonus (2,' '));(14,14, WordBonus 3)] in
-  {
+  List.fold_left (fun  (s : t) (n : int) -> grab_tile s 7 n) {
     gameplay = make_gameplay (Board.init_board start 15) 
         (WordChecker.load_from_file "scrabble.txt"); 
     players = make_players player [];
     current = 0;
     tiles =  TileInventory.from_file "tiles.txt"
-  }
+  } (List.init player (fun x -> x))
 
 (** [bonus_printer tile] is the string representation of a bonus *)
 let bonus_printer (bonus : Board.bonus) =
@@ -117,36 +155,3 @@ let whose_turn s = s.current
 
 let increment_turn s = 
   {s with current = (s.current + 1) mod (List.length s.players)}
-
-(** [get_n_tiles i n acc] is a list of tiles appended to [acc].  If there 
-    are enough tiles left in [i], then [n] tiles will be 
-    appended to [acc].  If there are not enough tiles left in [i], then 
-    the remaining tiles left in [i] will be appended to [Some acc].  If there 
-    are no tiles left at all, then we return [None].  Always pass [[]] to this
-    function *)
-let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list) 
-  : TileInventory.t * (tile list option)  = 
-  match n with 
-  | 0 -> if List.length acc = 0 then i, None else  i, Some acc
-  | _ -> begin 
-      match TileInventory.next_tile i with
-      | Some tile, i' -> get_n_tiles i' (n - 1) (tile::acc)
-      | None, _ -> get_n_tiles i 0 acc
-    end
-
-let give_player_tiles pl i tiles = 
-  List.mapi (fun iter player 
-              -> if (i = iter) then 
-                  List.fold_left (fun (p : Player.t) (t : tile) -> Player.add_tile t p) player tiles
-                else player
-            ) pl
-
-let grab_tile s n = 
-  let tile_inventory', tiles = get_n_tiles s.tiles n [] in 
-  match tiles with
-  | Some tile_list -> {s with 
-                       players = 
-                         give_player_tiles s.players s.current tile_list; 
-                       tiles = tile_inventory'
-                      }
-  | None -> s

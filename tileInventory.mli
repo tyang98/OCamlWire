@@ -9,3 +9,5 @@ type tile = Letter of char | Blank
 val next_tile : t -> tile option * t
 
 val from_file : string -> t
+
+val string_of_tile : tile -> string

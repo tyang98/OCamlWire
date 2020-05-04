@@ -186,6 +186,32 @@ let state_tests = [
                     |> State.whose_turn) (0));
 ]
 
+open TileInventory
+
+let tile_inventory_tests = [
+  "Test loading from file" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> fst) (Some (Blank)));
+  "Test loading from file and taking second" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> fst) (Some (Blank)));
+
+  "Test loading from file and almost depleating" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> fst) (Some (Blank)));
+  "Test loading from file and depleating" >:: (fun _ -> 
+      assert_equal (TileInventory.from_file "all_blanks.txt" 
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> snd
+                    |> TileInventory.next_tile |> fst) (None));
+]
+
 let suite = "scrabble test suite" >::: List.flatten [
     tests;
     completed_move_tests; 
@@ -194,6 +220,7 @@ let suite = "scrabble test suite" >::: List.flatten [
     player_tests;
     (* word_checker_tests; *)
     state_tests;
+    tile_inventory_tests;
   ]
 
 let _ = run_test_tt_main suite

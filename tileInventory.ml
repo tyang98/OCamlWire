@@ -13,7 +13,8 @@ let from_file path =
   let file = open_in path in
   let rec loop acc =
     match get_line file with
-    | Some line when not (0 = String.length line) -> (line.[0] |> to_tile)::acc
+    | Some line when not (0 = String.length line) -> 
+      loop ((line.[0] |> to_tile)::acc)
     | _ -> acc
   in
   let tiles = loop [] in
@@ -24,3 +25,5 @@ let next_tile i =
   match i with
   | h::t -> (Some h, t)
   | [] -> (None, [])
+
+let string_of_tile t = match t with Letter c -> String.make 1 c | Blank -> "_"
