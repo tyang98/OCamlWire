@@ -14,7 +14,8 @@ type t = {
 
 (** [give_move move players i] gives a completed move [move] to a player in 
     [players] at index [t] and returns the updated list *)
-let give_move (move : Gameplay.CM.t) (players : Player.t list) (i : int) : Player.t list =
+let give_move (move : Gameplay.CM.t)
+    (players : Player.t list) (i : int) : Player.t list =
   List.mapi (fun  index player -> 
       if (index = i) then Player.add_move move player else player
     ) players
@@ -48,8 +49,9 @@ let init_state player =
     (5,9, LetterBonus (3,' ')); (5,13, LetterBonus (3,' ')); 
     (6,2, LetterBonus (2,' ')); (6,6, LetterBonus (2,' ')); 
     (6,8, LetterBonus (2,' ')); (6,12, LetterBonus (2,' '));
-    (7,0, WordBonus 3); (7,3, LetterBonus (2,' ')); (7,7, Start); (7,11, LetterBonus (2,' ')); 
-    (7,14, WordBonus 3); (8,2, LetterBonus (2,' ')); (8,6, LetterBonus (2,' '));
+    (7,0, WordBonus 3); (7,3, LetterBonus (2,' ')); (7,7, Start); 
+    (7,11, LetterBonus (2,' ')); (7,14, WordBonus 3); 
+    (8,2, LetterBonus (2,' ')); (8,6, LetterBonus (2,' '));
     (8,8, LetterBonus (2,' ')); (8,12, LetterBonus (2,' ')); 
     (9,1, LetterBonus (3,' ')); (9,5, LetterBonus (3,' '));
     (9,9, LetterBonus (3,' ')); (9,13, LetterBonus (3,' '));
@@ -94,7 +96,8 @@ let tile_printer (tile : Board.tile) =
 
 (** [list_printer lst] is the string representation of the list [lst] *)
 let rec list_printer i lst = 
-  i |> string_of_int |> print_string;
+  let num_string = i |> string_of_int  in 
+  ANSITerminal.(print_string [Bold] num_string);
   if i < 10 then print_string "  " else print_string " ";
   List.iter (fun a -> tile_printer a; print_string " ") lst;
   print_string "\n"
@@ -107,7 +110,8 @@ let board_printer s =
   let game_board = Gameplay.obtain_board gameplay in
   print_string "   ";
   for i = 0 to (Board.size game_board |> snd) - 1 do 
-    i |> string_of_int |> print_string;
+    let num_string = i |> string_of_int  in 
+    ANSITerminal.(print_string [Bold] num_string);
     if i < 10 then print_string "  " else print_string " "
   done;
   print_string "\n";
@@ -137,7 +141,9 @@ let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list)
 let give_player_tiles pl i tiles = 
   List.mapi (fun iter player 
               -> if (i = iter) then 
-                  List.fold_left (fun (p : Player.t) (t : tile) -> Player.add_tile t p) player tiles
+                  List.fold_left 
+                    (fun (p : Player.t) (t : tile) -> Player.add_tile t p) 
+                    player tiles
                 else player
             ) pl
 
