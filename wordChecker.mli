@@ -1,3 +1,4 @@
+(** [t] is the dictionary used for word verification. *)
 type t
 
 (** [check s d] is the boolean that is true if the dictionary [d] contains 
