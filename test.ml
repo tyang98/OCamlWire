@@ -4,6 +4,9 @@ open Board
 open TileInventory
 open Player
 
+(* TOOD: Write a Test Plan *)
+
+
 let string_to_list s = List.init (String.length s) (String.get s)
 
 module CTD = TrieDictionary.Make(struct

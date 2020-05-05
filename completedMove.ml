@@ -12,6 +12,8 @@ module type CompletedMove = sig
   val from : (string * (char * int) list * int list) list -> t
 end
 
+(** [split s] is the list of characters formed from each individual
+    letter in string [s]. *)
 let split (s : string) : char list = 
   List.init (String.length s) (String.get s) 
 

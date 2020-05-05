@@ -8,10 +8,13 @@ type t = {
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
+(** [make_gameplay b c] is the new gameplay given Board [b] and 
+    WordChecker [c]. *)
 let make_gameplay b c = { board = b; checker = c; score = 0; }
 
 exception InvalidWord of string
 
+(** TODO: Document *)   (* NEED TO REFACTOR TO MEET 10-20 max lines ? *)
 let total_score t : int option = try
     let width = List.init (t.board |> Board.size |> fst) (fun i -> i) in
     let height = List.init (t.board |> Board.size |> snd) (fun i -> i) in
@@ -28,11 +31,11 @@ let total_score t : int option = try
            |> String.concat ""
            |> String.split_on_char ' '
            |> List.filter (fun s -> String.length s > 1)
-           |> List.iter (fun word -> print_endline ("checking :" ^ word ^ ";"); if WordChecker.check word t.checker
+           |> List.iter (fun word -> print_endline ("checking :" ^ word ^ ";"); 
+                          if WordChecker.check word t.checker
                           then ()
                           else raise (InvalidWord word)
-                        )
-        ) in
+                        )) in
     line_sum width height (fun d1' d2' -> Board.query_tile d2' d1' t.board);
     line_sum height width (fun d1' d2' -> Board.query_tile d1' d2' t.board);
     Some (width
@@ -49,14 +52,19 @@ let total_score t : int option = try
          )
   with InvalidWord word -> print_endline ("bad word " ^ word); None
 
+(** TODO: Document *)
 let is_inside (in_x, in_y) (out_x, out_y) =
   in_x >= 0 && in_x < out_x && in_y >= 0 && in_y < out_y
 
+(** [is_filled opt] is the boolean that is true if a tile has already been 
+    filled, false if [opt] either a Bonus or Empty tile. *)
 let is_filled = function
   | Some (Bonus _)
   | Some (Empty) -> false
   | _ -> true
 
+(** [next_move move] is the next ProposedMove depending on the direction 
+    and location specified in the current ProposedMove [move]. *)
 let next_move move =
   let direction = ProposedMove.direction move in
   let (x, y) = ProposedMove.location move in
@@ -66,12 +74,14 @@ let next_move move =
   in
   ProposedMove.create direction loc (move |>  ProposedMove.letters |> List.tl)
 
+(** TODO: Document  *)
 let rec update_board move chars t =
   match ProposedMove.letters move with
   | [] -> Some (t, chars)
   | h::tail -> let loc = ProposedMove.location move in
     if is_inside loc (Board.size t.board)
-    && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) then begin
+    && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) 
+    then begin
       let bonus = Board.check_bonus (snd loc) (fst loc) in
       update_board (move |> next_move) ((h, bonus)::chars) {
         t with
@@ -89,8 +99,7 @@ let execute move t =
       -> total_score nt
          |> Option.map (fun (s: int) -> ({
              nt with score = s
-           }, s - nt.score))
-    )
+           }, s - nt.score)))
 
 let query_tile x y t = Board.query_tile x y t.board
 

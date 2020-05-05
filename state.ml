@@ -13,13 +13,12 @@ type t = {
 }
 
 (** [give_move move players i] gives a completed move [move] to a player in 
-    [players] at index [t] and returns the updated list *)
+    [players] at index [t] and returns the updated list. *)
 let give_score (amount : int)
     (players : Player.t list) (i : int) : Player.t list =
   List.mapi (fun  index player -> 
       if (index = i) then Player.add_score amount player else player
     ) players
-
 
 let execute (move : ProposedMove.t) (e : t) = 
   Gameplay.execute move e.gameplay
@@ -32,7 +31,7 @@ let execute (move : ProposedMove.t) (e : t) =
     )
 
 (** [make_players playerc ps] is a list of [Player.new_p] with a length of 
-    playerc *)
+    playerc. *)
 let rec make_players playerc ps = match playerc with
   | 0 -> ps
   | _ -> make_players (playerc - 1) (Player.new_p::ps)
@@ -43,7 +42,7 @@ let rec make_players playerc ps = match playerc with
     appended to [acc].  If there are not enough tiles left in [i], then 
     the remaining tiles left in [i] will be appended to [Some acc].  If there 
     are no tiles left at all, then we return [None].  Always pass [[]] to this
-    function *)
+    function. *)
 let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list) 
   : TileInventory.t * (tile list option)  = 
   match n with 
@@ -54,12 +53,12 @@ let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list)
       | None, _ -> get_n_tiles i 0 acc
     end
 
+(** TODO: Document *)
 let give_player_tiles pl i tiles = 
-  List.mapi (fun iter player 
-              -> if (i = iter) then 
-                  List.fold_left (fun (p : Player.t) (t : tile) -> Player.add_tile t p) player tiles
-                else player
-            ) pl
+  List.mapi (fun iter player -> if (i = iter) then List.fold_left 
+                  (fun (p : Player.t) (t : tile) -> Player.add_tile t p) 
+                  player tiles
+              else player) pl
 
 let grab_tile s n pn = 
   let tile_inventory', tiles = get_n_tiles s.tiles n [] in 
@@ -111,7 +110,7 @@ let init_state player =
     tiles =  TileInventory.from_file "tiles.txt"
   } (List.init player (fun x -> x))
 
-(** [bonus_printer tile] is the string representation of a bonus *)
+(** [bonus_printer tile] is the string representation of a bonus. *)
 let bonus_printer (bonus : Board.bonus) =
   match bonus with 
   | WordBonus 2 -> let wb = ("W" ^ (string_of_int 2)) in
@@ -125,7 +124,7 @@ let bonus_printer (bonus : Board.bonus) =
   | Start -> ANSITerminal.(print_string [on_red; Bold] "  ")
   | _ -> raise NotBonus
 
-(** [tile_printer tile] is the string representation of a tile *)
+(** [tile_printer tile] is the string representation of a tile. *)
 let tile_printer (tile : Board.tile) = 
   match tile with 
   | Filled c -> ANSITerminal.(print_string [green; Bold] 
@@ -134,7 +133,7 @@ let tile_printer (tile : Board.tile) =
   | Bonus b -> bonus_printer b
   | Empty -> print_string "()"
 
-(** [list_printer lst] is the string representation of the list [lst] *)
+(** [list_printer lst] is the string representation of the list [lst]. *)
 let rec list_printer i lst = 
   let num_string = i |> string_of_int  in 
   ANSITerminal.(print_string [Bold] num_string);

@@ -32,7 +32,7 @@ let parse move = let l = String.split_on_char ' ' move in
 
 (** [turn state] is the function that runs each turn of the game. Each
     turn includes placing new letters on the board and returning an associated
-    score for each player's respective moves  *)
+    score for each player's respective moves.  *)
 let rec turn state =
   ANSITerminal.(print_string [red;Bold] "Current Turn: " );
   print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int));
@@ -41,10 +41,9 @@ let rec turn state =
    |> string_of_int |> print_string); print_newline ();
   State.board_printer state;
   print_endline ("Your tiles: " ^ 
-                 (
-                   state |> State.whose_turn |> State.get_player state 
-                   |> Player.tiles |> List.map TileInventory.string_of_tile 
-                   |> List.fold_left (fun a b -> a ^ b ^ ";") ""));
+                 (state |> State.whose_turn |> State.get_player state 
+                  |> Player.tiles |> List.map TileInventory.string_of_tile 
+                  |> List.fold_left (fun a b -> a ^ b ^ ";") ""));
   print_string "\n move > ";
   match read_line () with
   | exception End_of_file -> ()
