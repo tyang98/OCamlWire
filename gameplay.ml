@@ -15,6 +15,7 @@ exception InvalidWord of string
 
 type c = New of char * bonus option | Old of char
 
+(** TODO: Document *)
 let word_score word =
   let rec loop acc wbs = function
     | h::t -> begin match h with
@@ -27,6 +28,7 @@ let word_score word =
   in
   loop 0 1 word
 
+(** TODO: Document *)
 let score (added: ((int * int) * (char * bonus option)) list) t : int option =
   try
     let (w, h) = t.board |> Board.size in
@@ -52,7 +54,7 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
                           | Old c -> String.make 1 c)
                                      |> String.concat ""
                       in
-                      print_endline ("checking :" ^ str_word ^ ";");
+                      print_endline ("checking:" ^ str_word ^ ";");
                       if WordChecker.check str_word t.checker
                       then word_score word
                       else raise (InvalidWord str_word)

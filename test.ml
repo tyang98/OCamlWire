@@ -114,6 +114,8 @@ let completed_move_scm_test (name : string) (cm : SCM.t ) (e : int) : test =
 let totNoBonus =  SCM.from [("tot", [], [])]
 let totDoubleLetter = SCM.from [("tot", [('t', 2)], [])]
 let totDoubleWord = SCM.from [("tot", [], [2])]
+let tttTripleLetter = SCM.from [("ttt", [('t', 3)], [])]
+let tinytomTripleWord = SCM.from [("tinytom", [], [3])]
 
 let completed_move_tests = [
   completed_move_scm_test "Simple 3 letter test no bonuses" totNoBonus 3;
@@ -121,16 +123,18 @@ let completed_move_tests = [
   completed_move_scm_test 
     "only 1 bonus letter, but 2 letters in word" totDoubleLetter 4;
   completed_move_scm_test 
+    "only 1 bonus letter, but 3 letters in word" tttTripleLetter 5;
+  completed_move_scm_test "Simple 7 letter triple word" tinytomTripleWord 36;
+  completed_move_scm_test 
     "Simple 3 letter test with triple value 1 letter matching" 
     (SCM.from [("got", [('g', 3)], [])]) 8;
+  completed_move_scm_test 
+    "Simple 4 letter test with double value word bonus" 
+    (SCM.from [("heat", [], [2])]) 14;
   completed_move_scm_test "Letter and word bonus"
     (SCM.from [("got", [('g', 3)], [2])]) 16;
   completed_move_scm_test "Two word test"
     (SCM.from [("toe", [], [3]); ("ending", [('i', 2)], [3])]) 36;
-]
-
-let tests = [
-
 ]
 
 let bonuses = [(0, 0, WordBonus 0); (1, 2, WordBonus 3)]
@@ -144,6 +148,7 @@ let b_with_letter = b
                     |> Board.set_tile 0 14 'b' 
                     |> Board.set_tile 14 14 'c'
                     |> Board.set_tile 14 0 'd'
+                    |> Board.set_tile 3 4 'F'
 
 let board_tests = [
   "Test board of size 15 is actually size 15" >:: (fun _ ->
@@ -154,13 +159,14 @@ let board_tests = [
       assert_equal (Board.check_bonus 1 2 b2) (Some (WordBonus 3)));
   "Test letters in 0,0" >:: (fun _ -> 
       assert_equal (Board.query_tile 0 0 b_with_letter) (Some (Filled 'a')));
-  "Test letters in 0,15" >:: (fun _ -> 
+  "Test letters in 0,14" >:: (fun _ -> 
       assert_equal (Board.query_tile 0 14 b_with_letter) (Some (Filled 'b')));
-  "Test letters in 0,0" >:: (fun _ -> 
+  "Test letters in 14,14" >:: (fun _ -> 
       assert_equal (Board.query_tile 14 14 b_with_letter) (Some (Filled 'c')));
-  "Test letters in 0,0" >:: (fun _ -> 
+  "Test letters in 14,0" >:: (fun _ -> 
       assert_equal (Board.query_tile 14 0 b_with_letter) (Some (Filled 'd')));
-
+  "Test letters in non-edge position" >:: (fun _ -> 
+      assert_equal (Board.query_tile 3 4 b_with_letter) (Some (Filled 'F')));
 ]
 
 open Player
@@ -169,6 +175,9 @@ let player_with_2_moves =
   Player.new_p |> Player.add_score 3 |> Player.add_score 4
 let player_with_1_tile = 
   Player.new_p |> Player.add_tile Blank
+let player_with_multiple_tiles = 
+  Player.new_p |> Player.add_tile Blank |> Player.add_tile (Letter 'A') 
+  |> Player.add_tile Blank
 
 let player_tests = [
   "Player score test, multi moves" >:: (fun _ ->
@@ -177,11 +186,15 @@ let player_tests = [
       assert_equal (Player.score Player.new_p) 0);
   "New player has no tiles" >:: (fun _ ->
       assert_equal (Player.tiles Player.new_p) []);
-  "Test tile adding" >:: (fun _ ->
+  "Test single tile adding" >:: (fun _ ->
       assert_equal (Player.tiles player_with_1_tile |> List.length) 1);
+  "Test multiple tile adding" >:: (fun _ ->
+      assert_equal (Player.tiles player_with_multiple_tiles |> List.length) 3);
 ]
 
 let state_tests = [
+  "Test initial turn" >:: (fun _ -> 
+      assert_equal (State.init_state 4 |> State.whose_turn) (0));
   "Test turn incrementing works correctly" >:: (fun _ -> 
       assert_equal (State.init_state 4 
                     |> State.increment_turn 
@@ -223,7 +236,6 @@ let tile_inventory_tests = [
 ]
 
 let suite = "scrabble test suite" >::: List.flatten [
-    tests;
     completed_move_tests; 
     trie_tests;
     board_tests;

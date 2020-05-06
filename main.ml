@@ -34,7 +34,7 @@ let parse move = let l = String.split_on_char ' ' move in
     turn includes placing new letters on the board and returning an associated
     score for each player's respective moves.  *)
 let rec turn state =
-  ANSITerminal.(print_string [red;Bold] "Current Turn: " );
+  ANSITerminal.(print_string [Bold] "Current Turn: " );
   print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int));
   ANSITerminal.(print_string [red; Bold] "Your Score: "); 
   (State.whose_turn state |> State.get_player state |> Player.score 
@@ -51,7 +51,7 @@ let rec turn state =
     | exception _ -> ANSITerminal.(print_string [red] "Invalid move\n");
       turn state
     | pm -> State.execute pm state |> function
-      | None -> ANSITerminal.(print_string [red] "Move not allowed\n");
+      | None -> ANSITerminal.(print_string [red] "Move not allowed\n\n");
         turn state
       | Some ns -> ns |> State.increment_turn |> turn
 
