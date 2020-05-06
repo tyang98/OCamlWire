@@ -3,14 +3,13 @@ open Board
 type t = {
   board: Board.t;
   checker: WordChecker.t;
-  score: int;
 }
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
 (** [make_gameplay b c] is the new gameplay given Board [b] and 
     WordChecker [c]. *)
-let make_gameplay b c = { board = b; checker = c; score = 0; }
+let make_gameplay b c = { board = b; checker = c; }
 
 exception InvalidWord of string
 
@@ -109,7 +108,6 @@ let rec update_board move chars t =
       let bonus = Board.check_bonus (snd loc) (fst loc) t.board in
       update_board (move |> next_move)
         ((((snd loc), (fst loc)), (h, bonus))::chars) {
-        t with
         checker = t.checker;
         board = Board.set_tile (snd loc) (fst loc) h t.board;
       }
@@ -120,14 +118,10 @@ let execute move t =
   Option.bind (update_board move [] t)
     (fun ((nt:t), chars)
       -> score chars nt
-         |> Option.map (fun (s: int) -> ({
-             nt with score = s
-           }, s))
+         |> Option.map (fun (s: int) -> nt, s)
     )
 
 let query_tile x y t = Board.query_tile x y t.board
 
 let obtain_board t = 
   t.board
-
-let current_score b = b.score
