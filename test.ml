@@ -4,6 +4,16 @@ open Board
 open TileInventory
 open Player
 
+(* TOOD: Write a Test Plan
+   Deductions (aka we need to explain)
+   -The test plan does not explain which parts of the system were automatically 
+   tested by OUnit vs. manually tested. 
+   - The test plan does not explain what modules were tested by OUnit and how 
+     test cases were developed (black box, glass box, randomized, etc.). 
+   - The test plan does not provide an argument for why the testing approach
+     demonstrates the correctness of the system.*)
+
+(** [string_to_list s] is a list of characters from the string [s]. *)
 let string_to_list s = List.init (String.length s) (String.get s)
 
 module CTD = TrieDictionary.Make(struct

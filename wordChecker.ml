@@ -10,9 +10,9 @@ module Dict = TrieDictionary.Make(struct
 
 type t = unit Dict.t
 
-
 let check word t = Dict.check word t
 
+(** TODO: Document *)
 let get_line file = try Some (input_line file) with End_of_file -> None
 
 let load_from_file path =

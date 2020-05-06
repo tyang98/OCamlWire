@@ -1,12 +1,12 @@
-(** [t] is the type representing a proposed move *)
+(** [t] is the type representing a proposed move. *)
 type t 
 
-(** The type of directions representing either across or down *)
+(** The type of directions representing either across or down. *)
 type direction = Across | Down
 
 (** [create d i lst] is the proposed move given a direction [d] 
     tuple [i] consisting of the row and column space and a list of 
-    letters [lst] *)
+    letters [lst]. *)
 val create : direction -> int * int -> char list -> t
 
 (** [letters m] is the list of characters representing each letter used 

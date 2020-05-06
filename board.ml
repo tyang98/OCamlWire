@@ -9,7 +9,7 @@ let board (t:t) : tile list list =
   t
 
 (** [bonus_extract bonus r c] is the tile of type Empty or Bonus located at
-    row [r] and column [c] *)
+    row [r] and column [c]. *)
 let bonus_extract bonus (r : int) (c : int) =
   match bonus |> List.filter (fun (a, b, _) -> r = a && c = b) with
   | [] -> Empty
@@ -17,7 +17,7 @@ let bonus_extract bonus (r : int) (c : int) =
 
 (** [fill_row bonuses size row l] is a list of tiles which are either empty or
     filled with bonuses based on the supplied bonuses list, and the [row] 
-    supplied *)
+    supplied. *)
 let rec fill_row bonuses (size : int) (row : int) (l : tile list) : tile list =
   match size with 
   | 0 -> l
@@ -25,7 +25,7 @@ let rec fill_row bonuses (size : int) (row : int) (l : tile list) : tile list =
            ((bonus_extract bonuses (row - 1) (size - 1))::l)
 
 (** [recurse_out bonuses size l] is a list of tile lists, each of which are
-    filled with either empty spaces or bonuses *)
+    filled with either empty spaces or bonuses. *)
 let rec recurse_out bonuses (total: int) (size : int) 
     (l : tile list list) : tile list list =
   match size with 

@@ -8,6 +8,8 @@ type t = {
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
+(** [make_gameplay b c] is the new gameplay given Board [b] and 
+    WordChecker [c]. *)
 let make_gameplay b c = { board = b; checker = c; score = 0; }
 
 exception InvalidWord of string
@@ -75,14 +77,19 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
     )
   with InvalidWord word -> print_endline ("bad word " ^ word); None
 
+(** TODO: Document *)
 let is_inside (in_x, in_y) (out_x, out_y) =
   in_x >= 0 && in_x < out_x && in_y >= 0 && in_y < out_y
 
+(** [is_filled opt] is the boolean that is true if a tile has already been 
+    filled, false if [opt] either a Bonus or Empty tile. *)
 let is_filled = function
   | Some (Bonus _)
   | Some (Empty) -> false
   | _ -> true
 
+(** [next_move move] is the next ProposedMove depending on the direction 
+    and location specified in the current ProposedMove [move]. *)
 let next_move move =
   let direction = ProposedMove.direction move in
   let (x, y) = ProposedMove.location move in
@@ -92,6 +99,7 @@ let next_move move =
   in
   ProposedMove.create direction loc (move |>  ProposedMove.letters |> List.tl)
 
+(** TODO: Document  *)
 let rec update_board move chars t =
   match ProposedMove.letters move with
   | [] -> Some (t, chars)

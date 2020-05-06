@@ -1,6 +1,8 @@
+(** [t] is the dictionary used for word verification. *)
 type t
 
-(** TODO: Document *)
+(** [check s d] is the boolean that is true if the dictionary [d] contains 
+    the word [s], false otherwise. *)
 val check : string -> t -> bool
 
 (** TODO: Document *)
