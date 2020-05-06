@@ -12,41 +12,67 @@ let make_gameplay b c = { board = b; checker = c; score = 0; }
 
 exception InvalidWord of string
 
-let total_score t : int option = try
-    let width = List.init (t.board |> Board.size |> fst) (fun i -> i) in
-    let height = List.init (t.board |> Board.size |> snd) (fun i -> i) in
+type c = New of char * bonus option | Old of char
+
+let word_score word =
+  let rec loop acc wbs = function
+    | h::t -> begin match h with
+        | New (c, Some (WordBonus x)) -> loop (CM.LV.get c + acc) (x * wbs) t
+        | New (c, Some (LetterBonus x)) -> loop (CM.LV.get c * x + acc) wbs t
+        | New (c, _)
+        | Old c -> loop (CM.LV.get c + acc) wbs t
+      end
+    | [] -> wbs * acc
+  in
+  loop 0 1 word
+
+let score (added: ((int * int) * (char * bonus option)) list) t : int option =
+  try
+    let (w, h) = t.board |> Board.size in
+    let width = List.init w (fun i -> w - 1 - i) in
+    let height = List.init h (fun i -> h - 1 - i) in
     let line_sum d1 d2 get =
-      d1 |> List.iter
-        (fun d1' ->
-           d2
-           |> List.map (fun d2' -> get d1' d2')
-           |> List.filter_map (fun o -> o)
-           |> List.map (function
-               | Filled c -> c
-               | _ -> ' ')
-           |> List.map (String.make 1)
-           |> String.concat ""
-           |> String.split_on_char ' '
-           |> List.filter (fun s -> String.length s > 1)
-           |> List.iter (fun word -> print_endline ("checking :" ^ word ^ ";"); if WordChecker.check word t.checker
-                          then ()
-                          else raise (InvalidWord word)
-                        )
-        ) in
-    line_sum width height (fun d1' d2' -> Board.query_tile d2' d1' t.board);
-    line_sum height width (fun d1' d2' -> Board.query_tile d1' d2' t.board);
-    Some (width
-          |> List.fold_left
-            (fun (acc:int) (c:int) ->
-               acc + (height
-                      |> List.map (fun (r:int) -> Board.query_tile r c t.board)
-                      |> List.filter_map (function
-                          | Some (Filled c) -> Some c
-                          | _ -> None)
-                      |> List.fold_left (fun acc c -> acc + (CM.LV.get c)) 0
-                     )
-            ) 0
-         )
+      d1 |> List.fold_left
+        (fun acc d1' ->
+           acc + (d2
+                  |> List.map (fun d2' -> get d1' d2')
+                  |> List.fold_left (fun acc c -> match c with
+                      | Some c-> (c::(List.hd acc))::(List.tl acc)
+                      | None -> []::acc) [[]]
+                  |> List.filter (fun w ->
+                      List.length w > 1 &&
+                      w
+                      |> List.find_opt (fun c ->
+                          match c with New _ -> true | _ -> false)
+                      |> Option.is_some)
+                  |> List.map (fun word ->
+                      let str_word = word |> List.map (fun c -> match c with
+                          | New (c, _)
+                          | Old c -> String.make 1 c)
+                                     |> String.concat ""
+                      in
+                      print_endline ("checking :" ^ str_word ^ ";");
+                      if WordChecker.check str_word t.checker
+                      then word_score word
+                      else raise (InvalidWord str_word)
+                    )
+                  |> List.fold_left (+) 0
+                 )
+        ) 0 in
+    Some (
+      line_sum width height (fun d1' d2' ->
+          match List.assoc_opt (d2', d1') added with
+          | Some (c, b) -> Some (New (c, b))
+          | None -> match Board.query_tile d2' d1' t.board with
+            | Some (Filled c) -> Some (Old c)
+            | _ -> None)
+      + line_sum height width (fun d1' d2' ->
+          match List.assoc_opt (d1', d2') added with
+          | Some (c, b) -> Some (New (c, b))
+          | None -> match Board.query_tile d1' d2' t.board with
+            | Some (Filled c) -> Some (Old c)
+            | _ -> None)
+    )
   with InvalidWord word -> print_endline ("bad word " ^ word); None
 
 let is_inside (in_x, in_y) (out_x, out_y) =
@@ -71,25 +97,24 @@ let rec update_board move chars t =
   | [] -> Some (t, chars)
   | h::tail -> let loc = ProposedMove.location move in
     if is_inside loc (Board.size t.board)
-    && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) then begin
-      let bonus = Board.check_bonus (snd loc) (fst loc) in
-      update_board (move |> next_move) ((h, bonus)::chars) {
+    && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) then
+      let bonus = Board.check_bonus (snd loc) (fst loc) t.board in
+      update_board (move |> next_move)
+        ((((snd loc), (fst loc)), (h, bonus))::chars) {
         t with
         checker = t.checker;
         board = Board.set_tile (snd loc) (fst loc) h t.board;
       }
-    end
-    else begin
-      None
-    end
+    else None
+
 
 let execute move t =
   Option.bind (update_board move [] t)
-    (fun ((nt:t), _)
-      -> total_score nt
+    (fun ((nt:t), chars)
+      -> score chars nt
          |> Option.map (fun (s: int) -> ({
              nt with score = s
-           }, s - nt.score))
+           }, s))
     )
 
 let query_tile x y t = Board.query_tile x y t.board

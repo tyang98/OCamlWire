@@ -16,6 +16,7 @@ type t = {
     [players] at index [t] and returns the updated list *)
 let give_score (amount : int)
     (players : Player.t list) (i : int) : Player.t list =
+  print_int amount; print_endline " added";
   List.mapi (fun  index player -> 
       if (index = i) then Player.add_score amount player else player
     ) players
@@ -23,11 +24,10 @@ let give_score (amount : int)
 
 let execute (move : ProposedMove.t) (e : t) = 
   Gameplay.execute move e.gameplay
-  |> Option.map (fun (gn, score') -> 
-      let score_diff = score' - (Gameplay.current_score e.gameplay) in
+  |> Option.map (fun (gn, score') ->
       { 
         e with gameplay = gn; 
-               players = give_score score_diff e.players e.current;
+               players = give_score score' e.players e.current;
       }
     )
 
@@ -77,32 +77,32 @@ let get_player s pn = match List.nth_opt s.players pn with
 
 let init_state player = 
   let start = [
-    (0,0, WordBonus 3); (0,3, LetterBonus (2,' ')); (0,7, WordBonus 3); 
-    (0,11, LetterBonus (2,' ')); (0,14, WordBonus 3); 
-    (1,1, WordBonus 2); (1,5, LetterBonus (3,' ')); (1,9, LetterBonus (3,' '));
+    (0,0, WordBonus 3); (0,3, LetterBonus (2)); (0,7, WordBonus 3); 
+    (0,11, LetterBonus (2)); (0,14, WordBonus 3); 
+    (1,1, WordBonus 2); (1,5, LetterBonus (3)); (1,9, LetterBonus (3));
     (1,13, WordBonus 2); (2,2, WordBonus 2); 
-    (2,6, LetterBonus (2,' ')); (2,8, LetterBonus (2,' ')); (2,12, WordBonus 2);
-    (3,0, LetterBonus (2,' ')); (3,3, WordBonus 2); (3,7, LetterBonus (2,' ')); 
-    (3,13, WordBonus 2); (3,14, LetterBonus (2,' '));
+    (2,6, LetterBonus (2)); (2,8, LetterBonus (2)); (2,12, WordBonus 2);
+    (3,0, LetterBonus (2)); (3,3, WordBonus 2); (3,7, LetterBonus (2)); 
+    (3,13, WordBonus 2); (3,14, LetterBonus (2));
     (4,4, WordBonus 2); (4,10, WordBonus 2);
-    (5,1, LetterBonus (3,' ')); (5,5, LetterBonus (3,' '));
-    (5,9, LetterBonus (3,' ')); (5,13, LetterBonus (3,' ')); 
-    (6,2, LetterBonus (2,' ')); (6,6, LetterBonus (2,' ')); 
-    (6,8, LetterBonus (2,' ')); (6,12, LetterBonus (2,' '));
-    (7,0, WordBonus 3); (7,3, LetterBonus (2,' ')); (7,7, Start); 
-    (7,11, LetterBonus (2,' ')); (7,14, WordBonus 3); 
-    (8,2, LetterBonus (2,' ')); (8,6, LetterBonus (2,' '));
-    (8,8, LetterBonus (2,' ')); (8,12, LetterBonus (2,' ')); 
-    (9,1, LetterBonus (3,' ')); (9,5, LetterBonus (3,' '));
-    (9,9, LetterBonus (3,' ')); (9,13, LetterBonus (3,' '));
-    (10,4, WordBonus 2); (10,10, WordBonus 2); (11,0, LetterBonus (2,' '));
-    (11,3, WordBonus 2); (11,7, LetterBonus (2,' ')); (11,11, WordBonus 2); 
-    (11,14, LetterBonus (2,' ')); (12,2, WordBonus 2); 
-    (12,6, LetterBonus (2,' ')); (12,8, LetterBonus (2,' '));
-    (12,12, WordBonus 2); (13,1, WordBonus 2); (13,5, LetterBonus (3,' '));
-    (13,9, LetterBonus (3,' ')); (13,13, WordBonus 2);  
-    (14,0, WordBonus 3); (14,3, LetterBonus (2,' '));(14,7, WordBonus 3); 
-    (14,11, LetterBonus (2,' '));(14,14, WordBonus 3)] in
+    (5,1, LetterBonus (3)); (5,5, LetterBonus (3));
+    (5,9, LetterBonus (3)); (5,13, LetterBonus (3)); 
+    (6,2, LetterBonus (2)); (6,6, LetterBonus (2)); 
+    (6,8, LetterBonus (2)); (6,12, LetterBonus (2));
+    (7,0, WordBonus 3); (7,3, LetterBonus (2)); (7,7, Start); 
+    (7,11, LetterBonus (2)); (7,14, WordBonus 3); 
+    (8,2, LetterBonus (2)); (8,6, LetterBonus (2));
+    (8,8, LetterBonus (2)); (8,12, LetterBonus (2)); 
+    (9,1, LetterBonus (3)); (9,5, LetterBonus (3));
+    (9,9, LetterBonus (3)); (9,13, LetterBonus (3));
+    (10,4, WordBonus 2); (10,10, WordBonus 2); (11,0, LetterBonus (2));
+    (11,3, WordBonus 2); (11,7, LetterBonus (2)); (11,11, WordBonus 2); 
+    (11,14, LetterBonus (2)); (12,2, WordBonus 2); 
+    (12,6, LetterBonus (2)); (12,8, LetterBonus (2));
+    (12,12, WordBonus 2); (13,1, WordBonus 2); (13,5, LetterBonus (3));
+    (13,9, LetterBonus (3)); (13,13, WordBonus 2);  
+    (14,0, WordBonus 3); (14,3, LetterBonus (2));(14,7, WordBonus 3); 
+    (14,11, LetterBonus (2));(14,14, WordBonus 3)] in
   List.fold_left (fun  (s : t) (n : int) -> grab_tile s 7 n) {
     gameplay = make_gameplay (Board.init_board start 15) 
         (WordChecker.load_from_file "scrabble.txt"); 
@@ -118,9 +118,9 @@ let bonus_printer (bonus : Board.bonus) =
     ANSITerminal.(print_string [red; Bold] wb)
   | WordBonus 3 -> let wb = ("W" ^ (string_of_int 3)) in
     ANSITerminal.(print_string [magenta; Bold] wb)
-  | LetterBonus (2, c) -> let lb =("L" ^ (string_of_int 2)) in
+  | LetterBonus (2) -> let lb =("L" ^ (string_of_int 2)) in
     ANSITerminal.(print_string [cyan; Bold] lb)
-  | LetterBonus (3, c) -> let lb =("L" ^ (string_of_int 3)) in
+  | LetterBonus (3) -> let lb =("L" ^ (string_of_int 3)) in
     ANSITerminal.(print_string [blue; Bold] lb)
   | Start -> ANSITerminal.(print_string [on_red; Bold] "  ")
   | _ -> raise NotBonus

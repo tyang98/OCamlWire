@@ -1,5 +1,5 @@
 
-type bonus = WordBonus of int | LetterBonus of int * char | Start 
+type bonus = WordBonus of int | LetterBonus of int | Start 
 
 type tile = Filled of char | Bonus of bonus | Empty 
 

@@ -3,7 +3,7 @@ type t
 
 (** [bonus] is the type representing either a letter or word point bonus 
     and starting tile*)
-type bonus = WordBonus of int | LetterBonus of int * char | Start
+type bonus = WordBonus of int | LetterBonus of int | Start
 
 (** [tile] is the type of a tile *)
 type tile = Filled of char | Bonus of bonus | Empty 
