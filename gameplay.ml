@@ -30,8 +30,10 @@ type c = New of char * bonus option | Old of char
 let word_score word =
   let rec loop acc wbs = function
     | h::t -> begin match h with
-        | New (c, Some (WordBonus x)) -> loop (ScrabblePoint.get c + acc) (x * wbs) t
-        | New (c, Some (LetterBonus x)) -> loop (ScrabblePoint.get c * x + acc) wbs t
+        | New (c, Some (WordBonus x)) -> 
+          loop (ScrabblePoint.get c + acc) (x * wbs) t
+        | New (c, Some (LetterBonus x)) ->
+          loop (ScrabblePoint.get c * x + acc) wbs t
         | New (c, _)
         | Old c -> loop (ScrabblePoint.get c + acc) wbs t
       end
@@ -88,7 +90,8 @@ let is_inside (in_x, in_y) (out_x, out_y) =
   in_x >= 0 && in_x < out_x && in_y >= 0 && in_y < out_y
 
 (** [is_filled opt] is true if a tile has already been 
-    filled, false if the [tile option] contains either a Bonus or Empty tile. *)
+    filled, false if the [tile option] contains either a Bonus or 
+    Empty tile. *)
 let is_filled = function
   | Some (Bonus _)
   | Some (Empty) -> false
@@ -140,8 +143,8 @@ let update_board move t =
       then Some (t, chars) else None
     | h::tail -> let loc = ProposedMove.location move in
       if is_inside loc (Board.size t.board)
-      && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) then
-        let bonus = Board.check_bonus (snd loc) (fst loc) t.board in
+      && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) 
+      then let bonus = Board.check_bonus (snd loc) (fst loc) t.board in
         inner (move |> next_move) ((((snd loc), (fst loc)), (h, bonus))::chars)
           ((connected loc (ProposedMove.direction move) t)::connections) {
           checker = t.checker;

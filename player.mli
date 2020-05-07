@@ -10,7 +10,7 @@ module CM = StandardCompletedMove.StandardCompletedMove
     in addition to [le]. *)
 val add_tile : tile -> t -> t
 
-(** [add_move amount p] is a player with [amount] added to their score*)
+(** [add_move amount p] is a player with [amount] added to their score. *)
 val add_score : int -> t -> t
 
 (** [score p] is the score of a player [p]. *)

@@ -19,7 +19,7 @@ let default_bonuses = [
   (1,13, WordBonus 2); (2,2, WordBonus 2); 
   (2,6, LetterBonus (2)); (2,8, LetterBonus (2)); (2,12, WordBonus 2);
   (3,0, LetterBonus (2)); (3,3, WordBonus 2); (3,7, LetterBonus (2)); 
-  (3,13, WordBonus 2); (3,14, LetterBonus (2));
+  (3,11, WordBonus 2); (3,14, LetterBonus (2));
   (4,4, WordBonus 2); (4,10, WordBonus 2);
   (5,1, LetterBonus (3)); (5,5, LetterBonus (3));
   (5,9, LetterBonus (3)); (5,13, LetterBonus (3)); 
