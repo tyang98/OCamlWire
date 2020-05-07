@@ -32,7 +32,7 @@ let parse move = let l = String.split_on_char ' ' move in
 
 (** [turn state] is the function that runs each turn of the game. Each
     turn includes placing new letters on the board and returning an associated
-    score for each player's respective moves.  *)
+    score for each player's respective moves. *)
 let rec turn state =
   ANSITerminal.(print_string [Bold] "Current Turn: " );
   print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int));
@@ -73,7 +73,7 @@ let rec player_count n =
 let main () = 
   ANSITerminal.(
     print_string [red; Bold]
-      "\n\n Welcome to OScrabble, a functional implementation of Scrabble. \n\n"
+      "\n Welcome to OScrabble, a functional implementation of Scrabble. \n\n"
   );
   ANSITerminal.(
     print_string [green; Bold]

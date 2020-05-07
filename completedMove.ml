@@ -24,10 +24,8 @@ module Make =
     module LV = LetterVal
 
     let score m = 
-      let rec add_bonus_letters 
-          (bonus : (char * int) list) 
-          (ls : (char * int) list) 
-        : (char * int) list = 
+      let rec add_bonus_letters (bonus : (char * int) list) 
+          (ls : (char * int) list) : (char * int) list = 
         match bonus with
         | (l, b)::t -> begin 
             (* Match along the letters in the words to 
@@ -39,8 +37,7 @@ module Make =
         | [] -> ls
       in
       List.fold_left (+) 0 
-        (
-          (* first map each string to a list of characters *)
+        ((* first map each string to a list of characters *)
           m |> List.map (fun (str, lb, wb) -> (split str, lb, wb))
           |> List.map (
             fun (chrs, lb, wb) -> 
@@ -50,8 +47,7 @@ module Make =
                |> add_bonus_letters lb
                |> List.fold_left (fun x y -> x + snd y) 0, wb ))
           |> List.map 
-            (fun (i, wb) -> i * (List.fold_left (fun a b -> a * b) 1 wb))
-        )
+            (fun (i, wb) -> i * (List.fold_left (fun a b -> a * b) 1 wb)))
 
     let words m = List.map (fun (str, _, _) -> str) m
 

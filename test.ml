@@ -4,7 +4,16 @@ open Board
 open TileInventory
 open Player
 
-(* TOOD: Write a Test Plan
+(* Test Plan: 
+   For our test plan for OScrabble (our implementation of 
+   the board game Scrabble), we decided to test the functions from the modules 
+   TrieDictionary, Board, TileInventory, State, Player, CompletedMove,
+   and ProposedMove with OUnit. On the other hand, we used the terminal by 
+   executing (make run) to manually test the functionalities of the Main and 
+   Gameplay modules because we could most easily identify the flow of our game 
+   and find potential bugs for scoring and the user-interface. In terms of
+   our OUnit tests, we developed our test cases 
+
    Deductions (aka we need to explain)
    -The test plan does not explain which parts of the system were automatically 
    tested by OUnit vs. manually tested. 
@@ -36,6 +45,7 @@ let complex_trie = CTD.empty
                    |> CTD.insert "tony" 40
                    |> CTD.insert "chris" 50
 
+(* Test trieDictionary functions. *)
 let trie_tests = [
   "insert 1" >:: (fun _ -> CTD.empty |> CTD.insert "test" 5
                            |> CTD.get "test"
@@ -98,6 +108,7 @@ let make_wc_test word =
   word >:: (fun _ -> WordChecker.check word wc
                      |> assert_equal true ~printer:(string_of_bool))
 
+(* Test WordChecker functions. *)
 let word_checker_tests = [
   make_wc_test "abacuses";
   make_wc_test "octopus";
@@ -115,6 +126,7 @@ let totDoubleWord = SCM.from [("tot", [], [2])]
 let tttTripleLetter = SCM.from [("ttt", [('t', 3)], [])]
 let tinytomTripleWord = SCM.from [("tinytom", [], [3])]
 
+(* Test CompletedMove functions. *)
 let completed_move_tests = [
   completed_move_scm_test "Simple 3 letter test no bonuses" totNoBonus 3;
   completed_move_scm_test "Simple 3 letter double word" totDoubleWord 6;
@@ -148,6 +160,7 @@ let b_with_letter = b
                     |> Board.set_tile 14 0 'd'
                     |> Board.set_tile 3 4 'F'
 
+(* Test Board functions. *)
 let board_tests = [
   "Test board of size 15 is actually size 15" >:: (fun _ ->
       assert_equal (Board.size b) (15, 15));
@@ -167,8 +180,6 @@ let board_tests = [
       assert_equal (Board.query_tile 3 4 b_with_letter) (Some (Filled 'F')));
 ]
 
-open Player
-
 let player_with_2_moves = 
   Player.new_p |> Player.add_score 3 |> Player.add_score 4
 let player_with_1_tile = 
@@ -177,6 +188,7 @@ let player_with_multiple_tiles =
   Player.new_p |> Player.add_tile Blank |> Player.add_tile (Letter 'A') 
   |> Player.add_tile Blank
 
+(* Test Player functions. *)
 let player_tests = [
   "Player score test, multi moves" >:: (fun _ ->
       assert_equal (Player.score player_with_2_moves) 7);
@@ -208,6 +220,7 @@ let legal_move = ProposedMove.create Across (7, 7) ['h';'e';'y']
 
 let illegal_move = ProposedMove.create Across (4, 6) ['a';'f';'d']
 
+(* Test State functions. *)
 let state_tests = [
   "Test initial turn" >:: (fun _ -> 
       assert_equal (player_4 |> State.whose_turn) (0));
@@ -264,8 +277,7 @@ let state_tests = [
     )
 ]
 
-open TileInventory
-
+(* Test TileInventory functions. *)
 let tile_inventory_tests = [
   "Test loading from file" >:: (fun _ -> 
       assert_equal (TileInventory.from_file "all_blanks.txt" 
@@ -290,7 +302,7 @@ let tile_inventory_tests = [
                     |> TileInventory.next_tile |> fst) (None));
 ]
 
-(* Set to true to enable a test set *)
+(* Set to true to enable a test set. *)
 let test_sets = [
   completed_move_tests, true; 
   trie_tests, true;

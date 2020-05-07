@@ -8,7 +8,7 @@ type tile = Letter of char | Blank
     followed by a tile inventory with the tile [tile] removed. *)
 val next_tile : t -> tile option * t
 
-(** TODO: Document *)
+(** [from_file f] is the list of possible tiles read from the file [f]. *)
 val from_file : string -> t
 
 (** [string_of_tile t] is the string representing the eitherthe letter 

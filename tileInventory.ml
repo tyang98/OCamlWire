@@ -2,7 +2,8 @@ type tile = Letter of char | Blank
 
 type t = tile list
 
-(** [shuffle lst] is the list [lst] with its elements placed in a random order*)
+(** [shuffle lst] is the list [lst] with its elements placed 
+    in a random order. *)
 let shuffle lst = 
   List.map (fun x -> (Random.bits (), x)) lst
   |> List.sort (fun (a, _) (b, _) -> compare a b )
@@ -27,7 +28,10 @@ let next_tile i =
   | h::t -> (Some h, t)
   | [] -> (None, [])
 
-let string_of_tile t = match t with Letter c -> String.make 1 c | Blank -> "_"
+let string_of_tile t = 
+  match t with 
+  | Letter c -> String.make 1 c 
+  | Blank -> "_"
 
-(* Make sure the randomizer is actually initialized to ensure random tiles *)
+(* Make sure the randomizer is actually initialized to ensure random tiles. *)
 let _ = Random.self_init ()

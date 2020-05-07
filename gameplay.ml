@@ -15,7 +15,9 @@ exception InvalidWord of string
 
 type c = New of char * bonus option | Old of char
 
-(** TODO: Document *)
+(** [word_score word] is the score associated with the letters in the word
+    [word] depending whether it is on a Blank tile, WordBonus tile, or Letter 
+    Bonus tile. *)
 let word_score word =
   let rec loop acc wbs = function
     | h::t -> begin match h with
@@ -37,15 +39,13 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
     let line_sum d1 d2 get =
       d1 |> List.fold_left
         (fun acc d1' ->
-           acc + (d2
-                  |> List.map (fun d2' -> get d1' d2')
+           acc + (d2 |> List.map (fun d2' -> get d1' d2')
                   |> List.fold_left (fun acc c -> match c with
                       | Some c-> (c::(List.hd acc))::(List.tl acc)
                       | None -> []::acc) [[]]
                   |> List.filter (fun w ->
-                      List.length w > 1 &&
-                      w
-                      |> List.find_opt (fun c ->
+                      List.length w > 1 && 
+                      w |> List.find_opt (fun c ->
                           match c with New _ -> true | _ -> false)
                       |> Option.is_some)
                   |> List.map (fun word ->
@@ -56,28 +56,24 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
                       in
                       if WordChecker.check str_word t.checker
                       then word_score word
-                      else raise (InvalidWord str_word)
-                    )
-                  |> List.fold_left (+) 0
-                 )
-        ) 0 in
-    Some (
-      line_sum width height (fun d1' d2' ->
-          match List.assoc_opt (d2', d1') added with
-          | Some (c, b) -> Some (New (c, b))
-          | None -> match Board.query_tile d2' d1' t.board with
-            | Some (Filled c) -> Some (Old c)
-            | _ -> None)
-      + line_sum height width (fun d1' d2' ->
-          match List.assoc_opt (d1', d2') added with
-          | Some (c, b) -> Some (New (c, b))
-          | None -> match Board.query_tile d1' d2' t.board with
-            | Some (Filled c) -> Some (Old c)
-            | _ -> None)
-    )
+                      else raise (InvalidWord str_word)) 
+                  |> List.fold_left (+) 0)) 0 in
+    Some (line_sum width height (fun d1' d2' ->
+        match List.assoc_opt (d2', d1') added with
+        | Some (c, b) -> Some (New (c, b))
+        | None -> match Board.query_tile d2' d1' t.board with
+          | Some (Filled c) -> Some (Old c)
+          | _ -> None) + line_sum height width (fun d1' d2' ->
+        match List.assoc_opt (d1', d2') added with
+        | Some (c, b) -> Some (New (c, b))
+        | None -> match Board.query_tile d1' d2' t.board with
+          | Some (Filled c) -> Some (Old c)
+          | _ -> None))
   with InvalidWord word -> print_endline ("bad word " ^ word); None
 
-(** TODO: Document *)
+(** [is_inside (in_x, in_y) (out_x, out_y)] is the boolean that corresponds
+    to whether of not [in_x, in_y] is within the dimensions 
+    of [out_x, out_y]. *)
 let is_inside (in_x, in_y) (out_x, out_y) =
   in_x >= 0 && in_x < out_x && in_y >= 0 && in_y < out_y
 
@@ -99,7 +95,9 @@ let next_move move =
   in
   ProposedMove.create direction loc (move |>  ProposedMove.letters |> List.tl)
 
-(** TODO: Document  *)
+(** [update_board move chars t] updates the current gameplay board with 
+    the ProposedMove [move] and the next letters [chars] the user will 
+    place on the board. *)
 let rec update_board move chars t =
   match ProposedMove.letters move with
   | [] -> Some (t, chars)
@@ -113,7 +111,6 @@ let rec update_board move chars t =
         board = Board.set_tile (snd loc) (fst loc) h t.board;
       }
     else None
-
 
 let execute move t =
   Option.bind (update_board move [] t)
