@@ -4,23 +4,50 @@ open Board
 open TileInventory
 open Player
 
-(* Test Plan: 
-   For our test plan for OScrabble (our implementation of 
+(* For our test plan for OScrabble (our implementation of 
    the board game Scrabble), we decided to test the functions from the modules 
    TrieDictionary, Board, TileInventory, State, Player, CompletedMove,
-   and ProposedMove with OUnit. On the other hand, we used the terminal by 
+   and WordChecker with OUnit. On the other hand, we used the terminal by 
    executing (make run) to manually test the functionalities of the Main and 
    Gameplay modules because we could most easily identify the flow of our game 
-   and find potential bugs for scoring and the user-interface. In terms of
-   our OUnit tests, we developed our test cases 
+   and find potential bugs for scoring and the user-interface.
 
-   Deductions (aka we need to explain)
-   -The test plan does not explain which parts of the system were automatically 
-   tested by OUnit vs. manually tested. 
-   - The test plan does not explain what modules were tested by OUnit and how 
-     test cases were developed (black box, glass box, randomized, etc.). 
-   - The test plan does not provide an argument for why the testing approach
-     demonstrates the correctness of the system.*)
+   In terms of our OUnit tests, we developed our test cases primarily under 
+   the principle of black box testing. Our test cases involved both typical 
+   inputs and  boundary cases to check to see whether our functions worked 
+   properly. 
+   For the TrieDictionary module, we tested the insertion of words and point
+   values into the data structure and checked after a series of operations
+   whether we could retrive the point value of the associated word. 
+   For the Board module, we tested the initialization of our game board. 
+   Moreover, we verified searching for tiles on the edge of the board 
+   and for tiles in the middle of the board in order to see whether we could 
+   retrieve the correct information from all locations of the board. 
+   For the TileInventory module, we tested whether we could parse a file of
+   tiles and verified the type of tile we had after traversing through 
+   the list of tiles. We did this with a file of only blank tiles because
+   our system involves the random shuffling of tiles after parsing so it 
+   would have been difficult to find out which tile was next. 
+   For the State module, we tested for the scoring of the game, the changing
+   of player turns, and the placing of tiles on the board. We made sure that
+   players could receive points for placing down a valid word during their
+   turn. 
+   For the Player module, we tested for the score of an individual player
+   and the placement of tiles. We made sure that a player could run out of 
+   tiles and could place multiple tiles. 
+   For the CompletedMove module, we tested the scoring functionality of
+   placing words on bonuses, both Letter and Word bonuses. We made sure
+   that the bonus multiplier would work properly for the scoring depending on 
+   the type of bonus. 
+   For the WordChecker module, we loaded the file containing all the words
+   from a scrabble dictionary found online and tested to see whether our
+   functions could properly identify valid words. 
+
+   We believe that the testing approach displayed by this testing suite 
+   demonstrates the correctness of the underlying logic and structure
+   of our game.  We rigorously tested the functionality for each module
+   and whether its functions could perform our specification, such as board 
+   initialization and word verification. *)
 
 (** [string_to_list s] is a list of characters from the string [s]. *)
 let string_to_list s = List.init (String.length s) (String.get s)
