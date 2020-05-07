@@ -1,10 +1,7 @@
 open ProposedMove
-open CompletedMove
 
 (** [t] is the type representing the gameplay. *)
 type t
-
-module CM = StandardCompletedMove.StandardCompletedMove
 
 (** [execute pm t] is [Some (new_state * move_score)] if the proposed move is 
     valid, otherwise is [None]. *)

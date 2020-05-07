@@ -5,7 +5,17 @@ type t = {
   checker: WordChecker.t;
 }
 
-module CM = StandardCompletedMove.StandardCompletedMove
+module ScrabblePoint = struct 
+  let get char =
+    let point_values =
+      [('A', 1); ('B', 3); ('C', 3); ('D', 2); ('E', 1); ('F', 4);
+       ('G', 2); ('H', 4); ('I', 1); ('J', 8); ('K', 5); ('L', 1);
+       ('M', 3); ('N', 1); ('O', 1); ('P', 3); ('Q', 10); ('R', 1);
+       ('S', 1); ('T', 1); ('U', 1); ('V', 4); ('W', 4); ('X', 8);
+       ('Y', 4); ('Z', 8)] in
+    let upper_char = Char.uppercase_ascii char in
+    List.assoc upper_char point_values
+end
 
 (** [make_gameplay b c] is a gameplay with Board [b] and 
     WordChecker [c]. *)
@@ -20,10 +30,10 @@ type c = New of char * bonus option | Old of char
 let word_score word =
   let rec loop acc wbs = function
     | h::t -> begin match h with
-        | New (c, Some (WordBonus x)) -> loop (CM.LV.get c + acc) (x * wbs) t
-        | New (c, Some (LetterBonus x)) -> loop (CM.LV.get c * x + acc) wbs t
+        | New (c, Some (WordBonus x)) -> loop (ScrabblePoint.get c + acc) (x * wbs) t
+        | New (c, Some (LetterBonus x)) -> loop (ScrabblePoint.get c * x + acc) wbs t
         | New (c, _)
-        | Old c -> loop (CM.LV.get c + acc) wbs t
+        | Old c -> loop (ScrabblePoint.get c + acc) wbs t
       end
     | [] -> wbs * acc
   in
