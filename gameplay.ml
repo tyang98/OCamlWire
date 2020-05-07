@@ -95,25 +95,48 @@ let next_move move =
   in
   ProposedMove.create direction loc (move |>  ProposedMove.letters |> List.tl)
 
+let previous_loc move =
+  let direction = ProposedMove.direction move in
+  let (x, y) = ProposedMove.location move in
+  match direction with
+  | Across -> (x - 1, y)
+  | Down -> (x, y - 1)
+
+let filled_space x y t =
+  is_inside (x, y) (Board.size t.board)
+  && Board.query_tile y x t.board |> is_filled
+
+let connected (x, y) (d:ProposedMove.direction) t =
+  (Board.check_bonus y x t.board |> function Some Start -> true | _ -> false)
+  || (let ((x1, y1), (x2, y2)) = match d with
+      | Across -> ((x, y + 1), (x, y - 1))
+      | Down -> ((x + 1, y), (x - 1, y))
+     in
+     filled_space x1 y1 t || filled_space x2 y2 t)
+
 (** [update_board move chars t] updates the current gameplay board with 
-    the ProposedMove [move] and the next letters [chars] the user will 
-    place on the board. *)
-let rec update_board move chars t =
-  match ProposedMove.letters move with
-  | [] -> Some (t, chars)
-  | h::tail -> let loc = ProposedMove.location move in
-    if is_inside loc (Board.size t.board)
-    && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) then
-      let bonus = Board.check_bonus (snd loc) (fst loc) t.board in
-      update_board (move |> next_move)
-        ((((snd loc), (fst loc)), (h, bonus))::chars) {
-        checker = t.checker;
-        board = Board.set_tile (snd loc) (fst loc) h t.board;
-      }
-    else None
+    the ProposedMove [move]. *)
+let update_board move t =
+  let rec inner move chars connections t =
+    match ProposedMove.letters move with
+    | [] -> if List.exists (fun b -> b) connections
+            || let (x, y) = ProposedMove.location move in filled_space x y t
+      then Some (t, chars) else None
+    | h::tail -> let loc = ProposedMove.location move in
+      if is_inside loc (Board.size t.board)
+      && (Board.query_tile (snd loc) (fst loc) t.board |> is_filled |> not) then
+        let bonus = Board.check_bonus (snd loc) (fst loc) t.board in
+        inner (move |> next_move) ((((snd loc), (fst loc)), (h, bonus))::chars)
+          ((connected loc (ProposedMove.direction move) t)::connections) {
+          checker = t.checker;
+          board = Board.set_tile (snd loc) (fst loc) h t.board;
+        }
+      else None
+  in
+  inner move [] [let (x, y) = previous_loc move in filled_space x y t] t
 
 let execute move t =
-  Option.bind (update_board move [] t)
+  Option.bind (update_board move t)
     (fun ((nt:t), chars)
       -> score chars nt
          |> Option.map (fun (s: int) -> nt, s)
