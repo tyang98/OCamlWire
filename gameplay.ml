@@ -7,7 +7,7 @@ type t = {
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
-(** [make_gameplay b c] is the new gameplay given Board [b] and 
+(** [make_gameplay b c] is a gameplay with Board [b] and 
     WordChecker [c]. *)
 let make_gameplay b c = { board = b; checker = c; }
 
@@ -15,9 +15,8 @@ exception InvalidWord of string
 
 type c = New of char * bonus option | Old of char
 
-(** [word_score word] is the score associated with the letters in the word
-    [word] depending whether it is on a Blank tile, WordBonus tile, or Letter 
-    Bonus tile. *)
+(** [word_score word] is the score of a just-played [word], accounting for
+    bonuses associated with newly added tiles. *)
 let word_score word =
   let rec loop acc wbs = function
     | h::t -> begin match h with
@@ -30,7 +29,9 @@ let word_score word =
   in
   loop 0 1 word
 
-(** TODO: Document *)
+(** [score added t] is the point value of a just-completed move, where [t] is
+    the updated state and [added] is an association list from positions to
+    characters and bonuses of the newly added tiles. *)
 let score (added: ((int * int) * (char * bonus option)) list) t : int option =
   try
     let (w, h) = t.board |> Board.size in
@@ -71,21 +72,20 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
           | _ -> None))
   with InvalidWord word -> print_endline ("bad word " ^ word); None
 
-(** [is_inside (in_x, in_y) (out_x, out_y)] is the boolean that corresponds
-    to whether of not [in_x, in_y] is within the dimensions 
-    of [out_x, out_y]. *)
+(** [is_inside (in_x, in_y) (out_x, out_y)] is  whether or not [in_x, in_y] is
+    inside of of [out_x, out_y]. *)
 let is_inside (in_x, in_y) (out_x, out_y) =
   in_x >= 0 && in_x < out_x && in_y >= 0 && in_y < out_y
 
-(** [is_filled opt] is the boolean that is true if a tile has already been 
-    filled, false if [opt] either a Bonus or Empty tile. *)
+(** [is_filled opt] is true if a tile has already been 
+    filled, false if the [tile option] contains either a Bonus or Empty tile. *)
 let is_filled = function
   | Some (Bonus _)
   | Some (Empty) -> false
   | _ -> true
 
-(** [next_move move] is the next ProposedMove depending on the direction 
-    and location specified in the current ProposedMove [move]. *)
+(** [next_move move] is the next ProposedMove after one character is placed from
+    [move]. *)
 let next_move move =
   let direction = ProposedMove.direction move in
   let (x, y) = ProposedMove.location move in
@@ -95,6 +95,8 @@ let next_move move =
   in
   ProposedMove.create direction loc (move |>  ProposedMove.letters |> List.tl)
 
+(** [prebious_loc move] is the location ([(x, y)]) immediately before the
+    starting location of [move]. *)
 let previous_loc move =
   let direction = ProposedMove.direction move in
   let (x, y) = ProposedMove.location move in
@@ -102,10 +104,14 @@ let previous_loc move =
   | Across -> (x - 1, y)
   | Down -> (x, y - 1)
 
+(** [filled_space x y t] is whether the specified location contains a letter in
+    [t]. *)
 let filled_space x y t =
   is_inside (x, y) (Board.size t.board)
   && Board.query_tile y x t.board |> is_filled
 
+(** [conencted (x, y) d t] is whether there are any letters on either side of
+    the given position. *)
 let connected (x, y) (d:ProposedMove.direction) t =
   (Board.check_bonus y x t.board |> function Some Start -> true | _ -> false)
   || (let ((x1, y1), (x2, y2)) = match d with

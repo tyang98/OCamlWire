@@ -5,7 +5,7 @@ module type Dictionary = sig
   (** The type of an entry in the dictionary. *)
   type entry
 
-  (** The type of values associated with an [entry]. *)
+  (** The type of a Dictionary that maps [entry] to ['a]. *)
   type 'a t
 
   (** [empty] is an empty dictionary. *)
@@ -16,7 +16,7 @@ module type Dictionary = sig
       associated value. *)
   val insert : entry -> 'a -> 'a t -> 'a t
 
-  (** [get entry dict] is an option containing the value associated with
+  (** [get entry dict] is an [option] containing the value associated with
       [entry], or [None] if [entry] is not in [dict]. *)
   val get : entry -> 'a t -> 'a option
 

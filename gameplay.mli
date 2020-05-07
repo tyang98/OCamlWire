@@ -6,8 +6,8 @@ type t
 
 module CM = StandardCompletedMove.StandardCompletedMove
 
-(** [execute pm t] is Some (t * int) if the proposed move is 
-    valid, otherwise is None. *)
+(** [execute pm t] is [Some (new_state * move_score)] if the proposed move is 
+    valid, otherwise is [None]. *)
 val execute : ProposedMove.t -> t -> (t * int) option
 
 (** [query_tile r c g] is Some tile if there is a tile in [r] [c] on [b], 

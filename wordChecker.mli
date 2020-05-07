@@ -1,11 +1,9 @@
-(** [t] is the dictionary used for word verification. *)
+(** [t] is the type of a word checker. *)
 type t
 
-(** [check s d] is the boolean that is true if the dictionary [d] contains 
-    the word [s], false otherwise. *)
+(** [check s d] is whether the dictionary [d] contains the word [s]. *)
 val check : string -> t -> bool
 
-(** TODO: Document *)
+(** [load_from_file file_path] is a [WordChecker.t] loaded with strings from the
+    file at [file_path] such that each line of the file is treated as a word. *)
 val load_from_file : string -> t
-
-(* val load_from_file_definitions : string -> t *)
