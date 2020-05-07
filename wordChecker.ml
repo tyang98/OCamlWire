@@ -12,7 +12,8 @@ type t = unit Dict.t
 
 let check word t = Dict.check word t
 
-(** TODO: Document *)
+(** [get_line file] is the String option containing the word present
+    on a particular in file [file]. *)
 let get_line file = try Some (input_line file) with End_of_file -> None
 
 let load_from_file path =

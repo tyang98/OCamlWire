@@ -6,11 +6,11 @@ open Player
 
 (* For our test plan for OScrabble (our implementation of 
    the board game Scrabble), we decided to test the functions from the modules 
-   TrieDictionary, Board, TileInventory, State, Player, CompletedMove,
-   and WordChecker with OUnit. On the other hand, we used the terminal by 
-   executing (make run) to manually test the functionalities of the Main and 
-   Gameplay modules because we could most easily identify the flow of our game 
-   and find potential bugs for scoring and the user-interface.
+   TrieDictionary, Board, TileInventory, State, Player, and WordChecker with 
+   OUnit. On the other hand, we used the terminal by executing (make run) to 
+   manually test the functionalities of the Main and Gameplay modules because 
+   we could most easily identify the flow of our game and find potential bugs 
+   for scoring and the user-interface.
 
    In terms of our OUnit tests, we developed our test cases primarily under 
    the principle of black box testing. Our test cases involved both typical 
@@ -35,10 +35,6 @@ open Player
    For the Player module, we tested for the score of an individual player
    and the placement of tiles. We made sure that a player could run out of 
    tiles and could place multiple tiles. 
-   For the CompletedMove module, we tested the scoring functionality of
-   placing words on bonuses, both Letter and Word bonuses. We made sure
-   that the bonus multiplier would work properly for the scoring depending on 
-   the type of bonus. 
    For the WordChecker module, we loaded the file containing all the words
    from a scrabble dictionary found online and tested to see whether our
    functions could properly identify valid words. 

@@ -10,7 +10,7 @@ module type CompletedMove = sig
   (** [t] is the type of a completed move. *)
   type t
 
-  (** [LV] is the LetterValueMap we use to get the values of letters*)
+  (** [LV] is the LetterValueMap we use to get the values of letters. *)
   module LV : LetterValueMap
 
   (** [score c] is the total score accomplished by this move. *)
@@ -20,7 +20,7 @@ module type CompletedMove = sig
   val words : t -> string list
 
   (** [from (word, (letter, mult), mult)] is a CompletedMove consisting of the 
-      concatenation of each [word], the letter bonuses given by [letter] * 
+      concatenation of each [word], the letter bonuses given by [letter]. * 
       [mult], and the word bonuses given by [mult]. *)
   val from : (string * (char * int) list * int list) list -> t
 end
