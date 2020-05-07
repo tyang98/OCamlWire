@@ -2,9 +2,8 @@ type tile = Letter of char | Blank
 
 type t = tile list
 
-(** TODO: Document *)
+(** [shuffle lst] is the list [lst] with its elements placed in a random order*)
 let shuffle lst = 
-  Random.self_init ();
   List.map (fun x -> (Random.bits (), x)) lst
   |> List.sort (fun (a, _) (b, _) -> compare a b )
   |> List.map snd
@@ -16,7 +15,7 @@ let from_file path =
   let rec loop acc =
     match get_line file with
     | Some line when not (0 = String.length line) -> 
-      loop ((line.[0] |> to_tile)::acc)
+      loop ((line.[0] |> Char.lowercase |> to_tile)::acc)
     | _ -> acc
   in
   let tiles = loop [] in
@@ -29,3 +28,6 @@ let next_tile i =
   | [] -> (None, [])
 
 let string_of_tile t = match t with Letter c -> String.make 1 c | Blank -> "_"
+
+(* Make sure the randomizer is actually initialized to ensure random tiles *)
+let _ = Random.self_init ()
