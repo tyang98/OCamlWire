@@ -14,3 +14,8 @@ val from_file : string -> t
 (** [string_of_tile t] is the string representing the eitherthe letter 
     on tile [t] or a blank tile. *)
 val string_of_tile : tile -> string
+
+(** [tile_of_char c] is the tile represented of the character [c].  ['_']
+    represents the blank tile, while all lowercase letters a-z represent their
+    corresponding tiles.  Precondition: [c] in ([[a-z]] + ['_'])*)
+val tile_of_char : char -> tile

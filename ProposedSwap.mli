@@ -3,8 +3,10 @@ type t
 
 type tile = TileInventory.tile
 
-(** [create tiles] is a proposed swap where we want to swap [tiles]*)
-val create : TileInventory.tile list -> t
+(** [create tiles] is a proposed swap where we want to swap the tiles 
+    represented by the string list [tiles].  Precondition: all strings 
+    in the list are of length 1*)
+val create : string list -> t
 
 (** [tiles ps] is the tiles we want to swap*)
 val tiles : t -> tile list

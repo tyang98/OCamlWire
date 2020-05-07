@@ -33,5 +33,10 @@ let string_of_tile t =
   | Letter c -> String.make 1 c 
   | Blank -> "_"
 
+let tile_of_char c =
+  match c with
+  | '_' -> Blank
+  | c -> Letter c
+
 (* Make sure the randomizer is actually initialized to ensure random tiles. *)
 let _ = Random.self_init ()
