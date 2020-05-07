@@ -12,6 +12,9 @@ val init_players : Player.t list -> t
    on the current state [s]. *)
 val execute : ProposedMove.t -> t -> t option
 
+(** [swap n s] is Some new state where the current player swaps*)
+val swap : ProposedSwap.t -> t -> t option
+
 (** [increment_turn s] is s with the next players turn as current. *)
 val increment_turn : t -> t
 

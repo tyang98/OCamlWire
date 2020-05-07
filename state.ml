@@ -173,6 +173,20 @@ let whose_turn s = s.current
 let increment_turn s = 
   {s with current = (s.current + 1) mod (List.length s.players)}
 
+(** [tiles_remaining ls l_tiles blanks] is Some tiles where tiles is the 
+    result of removing the letters and blanks required to create the letters
+    in [ls] from [l_tiles] and [blanks], and is None if it is not possible
+    to remove blanks or letters to match [ls]*)
+let rec tiles_remaining (ls : char list) (l_tiles : char list) (blanks : int) 
+  : TileInventory.tile list option = 
+  match ls with 
+  | h::t when List.mem h l_tiles -> 
+    tiles_remaining t (List.filter (fun a -> h <> a) l_tiles) blanks
+  | h::t when blanks > 0 -> tiles_remaining t l_tiles (blanks - 1)
+  | h::t -> None
+  | [] -> Some (List.flatten [List.map (fun a -> Letter a) l_tiles; 
+                              List.init blanks (fun _ -> Blank)])
+
 (** [verify_tiles move inventory] is Some [move] if all the tiles required to
 *)  
 let verify_tiles (move : ProposedMove.t) (inventory : TileInventory.tile list) 
@@ -188,18 +202,7 @@ let verify_tiles (move : ProposedMove.t) (inventory : TileInventory.tile list)
           | Blank -> failwith "Precondition violated" 
           | Letter a -> a) l
     ) in
-  let rec loop (ls : char list) (l_tiles : char list) (blanks : int)
-    : TileInventory.tile list option=
-    match ls with 
-    | h::t when List.mem h l_tiles -> 
-      loop t (List.filter (fun a -> h <> a) l_tiles) blanks
-    | h::t when blanks > 0 -> loop t l_tiles (blanks - 1)
-    | h::t -> None
-
-    | [] -> Some (List.flatten [List.map (fun a -> Letter a) l_tiles; 
-                                List.init blanks (fun _ -> Blank)])
-  in
-  let x = loop (ProposedMove.letters move) letter_tiles num_blanks in 
+  let x = tiles_remaining (ProposedMove.letters move) letter_tiles num_blanks in 
   match x with 
   | Some l -> (Some move, l)
   | None -> None, []
@@ -229,3 +232,29 @@ let execute (move : ProposedMove.t) (e : t) =
                players = give_score score' e.players e.current;
       })
   >>= update_tiles new_tiles e.current
+
+let swap (swap : ProposedSwap.t) (s : t) : t option = 
+  let lt = 
+    ProposedSwap.tiles swap |> List.map (fun x -> match x with | Letter r -> r 
+                                                               | Blank -> '_') 
+  in s |> whose_turn |> get_player s |> Player.tiles |> 
+     List.partition (fun a -> a == Blank) 
+     |> (fun (b, l) ->  tiles_remaining lt
+            (List.map (fun x -> 
+                 match x with 
+                 | Letter r -> r 
+                 | Blank -> failwith "precondition violated"
+               ) l) 
+            (List.length b)
+        ) |> function | None -> None
+                      | Some l -> Some ( 
+                          grab_tile { 
+                            s with
+
+                            players =
+                              List.mapi 
+                                (fun i p -> 
+                                   if i = s.current then Player.update_tile l p 
+                                   else p) 
+                                s.players
+                          } (ProposedSwap.size swap) s.current) 

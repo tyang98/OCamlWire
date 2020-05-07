@@ -15,7 +15,7 @@ let from_file path =
   let rec loop acc =
     match get_line file with
     | Some line when not (0 = String.length line) -> 
-      loop ((line.[0] |> Char.lowercase |> to_tile)::acc)
+      loop ((line.[0] |> Char.lowercase_ascii |> to_tile)::acc)
     | _ -> acc
   in
   let tiles = loop [] in
