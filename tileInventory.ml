@@ -4,6 +4,7 @@ type t = tile list
 
 (** TODO: Document *)
 let shuffle lst = 
+  Random.self_init ();
   List.map (fun x -> (Random.bits (), x)) lst
   |> List.sort (fun (a, _) (b, _) -> compare a b )
   |> List.map snd

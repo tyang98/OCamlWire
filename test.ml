@@ -91,10 +91,9 @@ let trie_tests = [
                                     |> assert_equal (Some 50));
 ]
 
-(* let () = print_endline "starting dictionary load"
-   let wc = WordChecker.load_from_file "scrabble.txt"
-   let () = print_endline "finished dictionary load" *)
-(* 
+let () = print_endline "starting dictionary load"
+let wc = WordChecker.load_from_file "scrabble.txt"
+let () = print_endline "finished dictionary load" 
 let make_wc_test word =
   word >:: (fun _ -> WordChecker.check word wc
                      |> assert_equal true ~printer:(string_of_bool))
@@ -104,8 +103,7 @@ let word_checker_tests = [
   make_wc_test "octopus";
   make_wc_test "aa";
   make_wc_test "zzzs"
-] *)
-
+] 
 module SCM = StandardCompletedMove.StandardCompletedMove
 
 let completed_move_scm_test (name : string) (cm : SCM.t ) (e : int) : test = 
@@ -192,21 +190,78 @@ let player_tests = [
       assert_equal (Player.tiles player_with_multiple_tiles |> List.length) 3);
 ]
 
+let the_player = 
+  Player.new_p 
+  |> Player.update_tile [Letter 'i'; Letter 'c'; Letter 'e'; Letter 'n']
+
+let the_state = State.init_players [the_player]
+
+let player_4 = State.init_state 4
+
+(* Move 5,6,a,ice *)
+let move_simple = ProposedMove.create Across (5,6) ['i';'c';'e'] 
+
+(* move 5,5,a,n to extend move_simple*)
+let move_ex = ProposedMove.create Across (4,6) ['n'] 
+
+let legal_move = ProposedMove.create Across (7, 7) ['h';'e';'y']
+
+let illegal_move = ProposedMove.create Across (4, 6) ['a';'f';'d']
+
 let state_tests = [
   "Test initial turn" >:: (fun _ -> 
-      assert_equal (State.init_state 4 |> State.whose_turn) (0));
+      assert_equal (player_4 |> State.whose_turn) (0));
   "Test turn incrementing works correctly" >:: (fun _ -> 
-      assert_equal (State.init_state 4 
+      assert_equal (player_4 
                     |> State.increment_turn 
                     |> State.increment_turn 
                     |> State.whose_turn) (2));
   "Test turn incrementing wrap around works" >:: (fun _ -> 
-      assert_equal (State.init_state 4 
+      assert_equal (player_4
                     |> State.increment_turn 
                     |> State.increment_turn 
                     |> State.increment_turn
                     |> State.increment_turn 
                     |> State.whose_turn) (0));
+
+  "Test scoring" >:: (fun _ -> 
+      assert_equal (Some 8) (the_state
+                             |> State.execute move_simple
+                             |> Option.map (
+                               fun s -> State.get_player s 0 |> Player.score
+                             ) ) 
+    );
+
+  "Test placing removes tiles from inventory" >:: (fun _ -> 
+      assert_equal (Some 1) (the_state
+                             |> State.execute move_simple
+                             |> Option.map (
+                               fun s -> State.get_player s 0 |> Player.tiles 
+                                        |> List.length
+                             ) ) 
+        ~printer:(fun x -> match x with None -> "none" 
+                                      | Some x -> string_of_int x)
+    );
+
+  "Test invalid word" >:: (fun _ -> 
+      assert_equal (None) (State.execute illegal_move the_state) 
+    );
+
+  "Test valid word, but dont have the letters" >:: (fun _ -> 
+      assert_equal (None) (State.execute legal_move the_state)
+    );
+
+  "Test scoring addition" >:: (fun _ -> 
+      assert_equal (Some 14) (
+        (match State.execute move_simple the_state with 
+         | Some r -> State.execute move_ex r 
+         | None -> None)
+        |> Option.map (
+          fun s -> State.get_player s 0 |> Player.score)
+      )
+        ~printer:(fun x -> match x with None -> "none" 
+                                      | Some x -> string_of_int x) 
+    )
 ]
 
 open TileInventory
@@ -235,14 +290,20 @@ let tile_inventory_tests = [
                     |> TileInventory.next_tile |> fst) (None));
 ]
 
-let suite = "scrabble test suite" >::: List.flatten [
-    completed_move_tests; 
-    trie_tests;
-    board_tests;
-    player_tests;
-    (* word_checker_tests; *)
-    state_tests;
-    tile_inventory_tests;
-  ]
+(* Set to true to enable a test set *)
+let test_sets = [
+  completed_move_tests, true; 
+  trie_tests, true;
+  board_tests, true;
+  player_tests, true;
+  word_checker_tests, true;
+  state_tests, true;
+  tile_inventory_tests, true;
+]
+
+let suite = "scrabble test suite" >::: 
+            (List.filter_map 
+               (fun (f, e) -> if e then Some f else None) test_sets 
+             |> List.concat)
 
 let _ = run_test_tt_main suite

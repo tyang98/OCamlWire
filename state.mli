@@ -4,6 +4,10 @@ type t
 (** [init_state i] is a default scrabble game with [i] players. *)
 val init_state : int -> t
 
+(** [init_players players] is a default scrabble game with the players 
+    specified in [players]*)
+val init_players : Player.t list -> t
+
 (* [execute p s] is a the new state after executing proposed move [p] 
    on the current state [s]. *)
 val execute : ProposedMove.t -> t -> t option

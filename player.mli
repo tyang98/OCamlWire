@@ -21,3 +21,6 @@ val tiles : t -> tile list
 
 (** [new_p] is a new player with no moves or tiles. *)
 val new_p : t
+
+(** [update_tile t p] is [p] with the tiles [t]*)
+val update_tile : tile list -> t -> t

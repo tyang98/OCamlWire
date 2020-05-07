@@ -54,7 +54,6 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
                           | Old c -> String.make 1 c)
                                      |> String.concat ""
                       in
-                      print_endline ("checking:" ^ str_word ^ ";");
                       if WordChecker.check str_word t.checker
                       then word_score word
                       else raise (InvalidWord str_word)
