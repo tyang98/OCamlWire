@@ -201,7 +201,10 @@ let player_tests = [
 
 let the_player = 
   Player.new_p 
-  |> Player.update_tile [Letter 'i'; Letter 'c'; Letter 'e'; Letter 'n']
+  |> Player.update_tile [Letter 'i'; Letter 'c'; Letter 'e'; Letter 'n';
+                         Letter 'i'; Letter 'y'; Letter 'a'; Letter 'w'; 
+                         Letter 'a'; Letter 'e'; Letter 'r'; Letter 'a';
+                         Letter 'n'; Letter 't';]
 
 let the_state = State.init_players [the_player]
 
@@ -212,10 +215,24 @@ let move_simple = ProposedMove.create Across (7,7) ['i';'c';'e']
 
 (* move 6,7,a,n to extend move_simple*)
 let move_ex = ProposedMove.create Across (6,7) ['n'] 
+let move_ex2 = ProposedMove.create Down (6, 6) ['i']
+let move_ex3 = ProposedMove.create Across (4, 5) ['y';'a';'w']
+let move_ex4 = ProposedMove.create Down (4,4) ['a';'y';'e']
+let move_ex5 = ProposedMove.create (Down) (10,7) ['r';'a';'n';'t']
 
-let legal_move = ProposedMove.create Across (7, 7) ['h';'e';'y']
+let legal_move = ProposedMove.create Across (7, 7) ['x';'i']
 
 let illegal_move = ProposedMove.create Across (4, 6) ['a';'f';'d']
+
+(* State.execute operator to work with state options *)
+let (>>) (lhs : State.t option) (rhs : ProposedMove.t) : State.t option = 
+  match lhs with 
+  | Some s -> State.execute rhs s
+  | None -> lhs
+(** [get_score_p0 state] is the score of player 0 in state [state]*)
+let get_score_p0 state = match state with
+  | Some state -> State.get_player state 0 |> Player.score
+  | None -> -1
 
 (* Test State functions. *)
 let state_tests = [
@@ -223,32 +240,28 @@ let state_tests = [
       assert_equal (player_4 |> State.whose_turn) (0));
   "Test turn incrementing works correctly" >:: (fun _ -> 
       assert_equal (player_4 
-                    |> State.increment_turn 
-                    |> State.increment_turn 
+                    |> State.increment_turn |> State.increment_turn 
                     |> State.whose_turn) (2));
   "Test turn incrementing wrap around works" >:: (fun _ -> 
       assert_equal (player_4
-                    |> State.increment_turn 
-                    |> State.increment_turn 
-                    |> State.increment_turn
-                    |> State.increment_turn 
+                    |> State.increment_turn |> State.increment_turn 
+                    |> State.increment_turn |> State.increment_turn 
                     |> State.whose_turn) (0));
-
   "Test scoring" >:: (fun _ -> 
       assert_equal (Some 5) (the_state
                              |> State.execute move_simple
                              |> Option.map (
                                fun s -> State.get_player s 0 |> Player.score
-                             ) ) 
+                             ))
     );
 
   "Test placing removes tiles from inventory" >:: (fun _ -> 
-      assert_equal (Some 1) (the_state
-                             |> State.execute move_simple
-                             |> Option.map (
-                               fun s -> State.get_player s 0 |> Player.tiles 
-                                        |> List.length
-                             ) ) 
+      assert_equal (Some (11)) (the_state
+                                |> State.execute move_simple
+                                |> Option.map (
+                                  fun s -> State.get_player s 0 |> Player.tiles 
+                                           |> List.length
+                                ) ) 
         ~printer:(fun x -> match x with None -> "none" 
                                       | Some x -> string_of_int x)
     );
@@ -262,16 +275,31 @@ let state_tests = [
     );
 
   "Test scoring addition" >:: (fun _ -> 
-      assert_equal (Some 11) (
-        (match State.execute move_simple the_state with 
-         | Some r -> State.execute move_ex r 
-         | None -> None)
-        |> Option.map (
-          fun s -> State.get_player s 0 |> Player.score)
-      )
-        ~printer:(fun x -> match x with None -> "none" 
-                                      | Some x -> string_of_int x) 
-    )
+      assert_equal (11) (
+        Some the_state >> move_simple >> move_ex |> get_score_p0
+      ) ~printer:string_of_int
+    );
+
+  "Test scoring addition double letter" >:: (fun _ -> 
+      assert_equal (14) (
+        Some the_state
+        >> move_simple >> move_ex >> move_ex2 |> get_score_p0
+      ) ~printer:string_of_int
+    );
+  "Test scoring addition triple letter" >:: (fun _ -> 
+      assert_equal (31) (
+        Some the_state
+        >> move_simple >> move_ex >> move_ex2 >> move_ex3 |> get_score_p0
+      ) ~printer:string_of_int
+    );
+
+  "Test scoring addition double word" >:: (fun _ -> 
+      assert_equal (46) (
+        Some the_state
+        >> move_simple >> move_ex >> move_ex2 >> move_ex3 >> move_ex5
+        |> get_score_p0
+      ) ~printer:string_of_int
+    );
 ]
 
 (* Test TileInventory functions. *)
@@ -301,10 +329,10 @@ let tile_inventory_tests = [
 
 (* Set to true to enable a test set. *)
 let test_sets = [
-  trie_tests, false;
-  board_tests, false;
-  player_tests, false;
-  word_checker_tests, false;
+  trie_tests, true;
+  board_tests, true;
+  player_tests, true;
+  word_checker_tests, true;
   state_tests, true;
   tile_inventory_tests, true;
 ]

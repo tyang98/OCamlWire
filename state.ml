@@ -175,9 +175,17 @@ let increment_turn s =
     to remove blanks or letters to match [ls]*)
 let rec tiles_remaining (ls : char list) (l_tiles : char list) (blanks : int) 
   : TileInventory.tile list option = 
+  (* filter_one lst chr fnd acc is lst with at most one instance of chr removed
+  *)
+  let rec filter_one (lst) (chr) (fnd) (acc) = 
+    match lst with
+    | h::t when (not fnd) && (h = chr) -> filter_one t chr true acc
+    | h::t -> filter_one t chr fnd (h::acc)
+    | [] -> acc
+  in
   match ls with 
   | h::t when List.mem h l_tiles -> 
-    tiles_remaining t (List.filter (fun a -> h <> a) l_tiles) blanks
+    tiles_remaining t (filter_one l_tiles h false []) blanks
   | h::t when blanks > 0 -> tiles_remaining t l_tiles (blanks - 1)
   | h::t -> None
   | [] -> Some (List.flatten [List.map (fun a -> Letter a) l_tiles; 
@@ -245,12 +253,11 @@ let swap (swap : ProposedSwap.t) (s : t) : t option =
         ) |> function | None -> None
                       | Some l -> Some ( 
                           grab_tile { 
-                            s with
-
-                            players =
-                              List.mapi 
-                                (fun i p -> 
-                                   if i = s.current then Player.update_tile l p 
-                                   else p) 
-                                s.players
+                            s with players =
+                                     List.mapi 
+                                       (fun i p -> 
+                                          if i = s.current then 
+                                            Player.update_tile l p 
+                                          else p) 
+                                       s.players
                           } (ProposedSwap.size swap) s.current) 
