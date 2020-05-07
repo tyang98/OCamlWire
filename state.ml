@@ -48,15 +48,11 @@ let give_score (amount : int)
       if (index = i) then Player.add_score amount player else player
     ) players
 
-
-
-
 (** [make_players playerc ps] is a list of [Player.new_p] with a length of 
     playerc. *)
 let rec make_players playerc ps = match playerc with
   | 0 -> ps
   | _ -> make_players (playerc - 1) (Player.new_p::ps)
-
 
 (** [get_n_tiles i n acc] is a list of tiles appended to [acc].  If there 
     are enough tiles left in [i], then [n] tiles will be 
