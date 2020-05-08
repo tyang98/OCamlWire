@@ -8,7 +8,7 @@
 1. To play our game, you will be prompted after running ``make run`` to type
 in the number of players.
 
-2. After that, each player will be prompted ``move | swap | pass > `` where
+2. After that, each player will be prompted ``move | swap | pass | surrender > `` where
 they can either execute a move by placing letters on the board, swapping
 tiles, or passing their turn
 
@@ -25,4 +25,8 @@ For example, ``move 2 3 a orange``
 inputs ``swap [letter 1] [letter 2] ... [letter n]``
 For example, ``swap a b c``
 
-4. To execute a pass on the Scrabble board, you will simply need to type ``pass``
+5. To execute a pass on the Scrabble board, you will simply need to type ``pass``
+
+6. To execute a surrender, you will simply need to type ``surrender``. Once all
+players type ``surrender`` during their turn, the game will end.
+
