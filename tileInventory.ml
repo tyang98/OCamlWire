@@ -28,6 +28,13 @@ let next_tile i =
   | h::t -> (Some h, t)
   | [] -> (None, [])
 
+let draw n t = 
+  let rec inner c n t = match n, next_tile t with
+    | _, (None, _)
+    | 0, _ -> (c, t)
+    | _, (Some l, nt) -> inner (l::c) (n - 1) nt
+  in inner [] n t
+
 let string_of_tile t = 
   match t with 
   | Letter c -> String.make 1 c 

@@ -80,7 +80,7 @@ let score (added: ((int * int) * (char * bonus option)) list) t : int option =
         | None -> match Board.query_tile d1' d2' t.board with
           | Some (Filled c) -> Some (Old c)
           | _ -> None))
-  with InvalidWord word -> print_endline ("bad word " ^ word); None
+  with InvalidWord word -> None
 
 (** [is_inside (in_x, in_y) (out_x, out_y)] is  whether or not [in_x, in_y] is
     inside of of [out_x, out_y]. *)

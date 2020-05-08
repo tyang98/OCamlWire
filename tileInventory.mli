@@ -8,6 +8,8 @@ type tile = Letter of char | Blank
     followed by a tile inventory with the tile [tile] removed. *)
 val next_tile : t -> tile option * t
 
+val draw : int -> t -> tile list * t
+
 (** [from_file f] is the list of possible tiles read from the file [f]. *)
 val from_file : string -> t
 

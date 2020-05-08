@@ -219,22 +219,21 @@ let update_tiles (new_tiles : Player.tile list) (pn : int) (s : t) : t option =
 
 (** [>>= lhs rhs] is the infix operator respresentation of the bind operation 
     on [lhs] using the function [rhs] derived from the monad design. *)
-let (>>=) (lhs : 'a option) (rhs : 'a -> 'b option) : 'b option = 
-  match lhs with
-  | Some a -> rhs a
-  | None -> None
+let (>>=) = Option.bind
 
 let execute (move : ProposedMove.t) (e : t) = 
   let (pmove_opt, new_tiles) = 
     verify_tiles move (e |> whose_turn |> get_player e |> Player.tiles) in
+  let (draw, inv) = TileInventory.draw (7 - List.length new_tiles) e.tiles in
   pmove_opt 
-  >>= (fun a -> Gameplay.execute a e.gameplay) 
+  >>= (fun a -> Gameplay.execute a e.gameplay)
   >>= (fun (gn, score') ->
       Some { 
         e with gameplay = gn; 
                players = give_score score' e.players e.current;
+               tiles = inv;
       })
-  >>= update_tiles new_tiles e.current
+  >>= update_tiles (draw @ new_tiles) e.current
 
 let swap (swap : ProposedSwap.t) (s : t) : t option = 
   let lt = 
