@@ -16,6 +16,7 @@ type parsed_move =
   | Placement of ProposedMove.t
   | Swap of ProposedSwap.t 
   | Pass
+  | Surrender 
 
 (** [next_state state] is the new state after a player's turn ends. *)
 let next_state state =
@@ -25,9 +26,11 @@ let next_state state =
     each player's final score in the game's final state [state]. *)
 let rec display_final_score num players state = 
   match players with
-  | [] -> ();
+  | [] ->
+    ANSITerminal.(print_string [Bold;green] "\nThanks for playing!!! \n");
+    Stdlib.exit 0
   | h::t when num = 1 ->  
-    ANSITerminal.(print_string [Bold; red] "Final Scores: \n");
+    ANSITerminal.(print_string [Bold; red] "\nFinal Scores: \n");
     print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int)
                    ^ ": " ^ (State.whose_turn state |> State.get_player state 
                              |> Player.score |> string_of_int ));
@@ -58,15 +61,20 @@ let parse move =
       | _ -> Swap (ProposedSwap.create t) end
   | "pass"::t ->  begin match t with
       | [] -> Pass 
-      | _ -> failwith "Invalid move"
-    end
+      | _ -> failwith "Invalid move" end
+  | "surrender"::t -> begin match t with 
+      | _ -> Surrender end
   | _ -> failwith "Not a parsable move"
 
 (** [turn state] is the function that runs each turn of the game. Each
     turn includes placing new letters on the board and returning an associated
     score for each player's respective moves. *)
 let rec turn state =
-  ANSITerminal.(print_string [Bold] "\nCurrent Turn: " );
+  if State.game_over state 
+  then 
+    display_final_score 1 (get_player_list state) state
+  else
+    ANSITerminal.(print_string [Bold] "\nCurrent Turn: " );
   print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int));
   ANSITerminal.(print_string [red; Bold] "Your Score: "); 
   (State.whose_turn state |> State.get_player state |> Player.score 
@@ -77,7 +85,7 @@ let rec turn state =
                   (state |> State.whose_turn |> State.get_player state 
                    |> Player.tiles |> List.map TileInventory.string_of_tile 
                    |> List.fold_left (fun a b -> a ^ b ^ ";") ""));
-  ANSITerminal.(print_string [Bold] "\n\n move | swap | pass > ");
+  ANSITerminal.(print_string [Bold] "\n\n move | swap | pass | surrender > ");
   match read_line () with
   | exception End_of_file -> ()
   | move -> match parse move with
@@ -95,6 +103,11 @@ let rec turn state =
         | Some ns -> ns |> State.increment_turn |> turn 
         | _ -> ANSITerminal.(print_string [red] "Pass not valid\n\n");
           turn state end
+    | Surrender -> State.surrender state |> begin function
+        | None -> 
+          ANSITerminal.(print_string [red] "Surrender not allowed\n\n");
+        | Some ns -> ns |> State.increment_turn |> turn end
+
 
 (** [player_count] prompts the user to enter the number of players that
     will play the game. *)
