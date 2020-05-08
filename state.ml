@@ -81,7 +81,7 @@ let give_player_tiles pl i tiles =
 (** [grab_tile s n pn] is Some state [s] where player number [pn] has been 
     given [n] new tiles from the tile inventory, if there are tiles left in 
     the inventory. If there are no more tiles left in the inventory, grab_tile
-    is None*)
+    is None. *)
 let grab_tile s n pn = 
   let tile_inventory', tiles = get_n_tiles s.tiles n [] in 
   match tiles with
@@ -217,8 +217,7 @@ let update_tiles (new_tiles : Player.tile list) (pn : int) (s : t) : t option =
 
        }
 
-(** [>>= lhs rhs] is the infix operator respresentation of the bind operation 
-    on [lhs] using the function [rhs] derived from the monad design. *)
+(** [>>=] is the infix operator for Option.bind. *)
 let (>>=) = Option.bind
 
 let execute (move : ProposedMove.t) (e : t) = 

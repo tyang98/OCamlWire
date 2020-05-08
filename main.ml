@@ -11,6 +11,7 @@ open ProposedMove
 let player_parse number = 
   number |> int_of_string
 
+(** [parsed_move] is the type representing a Scrabble move. *)
 type parsed_move =  
   | Placement of ProposedMove.t
   | Swap of ProposedSwap.t 
@@ -44,17 +45,18 @@ let parse move =
     turn includes placing new letters on the board and returning an associated
     score for each player's respective moves. *)
 let rec turn state =
-  ANSITerminal.(print_string [Bold] "Current Turn: " );
+  ANSITerminal.(print_string [Bold] "\nCurrent Turn: " );
   print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int));
   ANSITerminal.(print_string [red; Bold] "Your Score: "); 
   (State.whose_turn state |> State.get_player state |> Player.score 
    |> string_of_int |> print_string); print_newline ();
   State.board_printer state;
-  print_endline ("Your tiles: " ^ 
-                 (state |> State.whose_turn |> State.get_player state 
-                  |> Player.tiles |> List.map TileInventory.string_of_tile 
-                  |> List.fold_left (fun a b -> a ^ b ^ ";") ""));
-  print_string "\n move | swap | pass > ";
+  ANSITerminal.(print_string [Bold] "\n Your tiles: ");
+  ANSITerminal.(print_string []
+                  (state |> State.whose_turn |> State.get_player state 
+                   |> Player.tiles |> List.map TileInventory.string_of_tile 
+                   |> List.fold_left (fun a b -> a ^ b ^ ";") ""));
+  ANSITerminal.(print_string [Bold] "\n\n move | swap | pass > ");
   match read_line () with
   | exception End_of_file -> ()
   | move -> match parse move with

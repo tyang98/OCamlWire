@@ -11,6 +11,6 @@ module type Entry = sig
   val to_list : t -> Target.t list
 end
 
-(** [Make(Entry)] is an efficient trie-backed [Dictionary] with entries of type
-    [Entry.t]. *)
+(** [Make(Entry)] is an efficient trie-backed [Dictionary] with entries of 
+    type [Entry.t]. *)
 module Make : functor (Entry : Entry) -> Dictionary with type entry = Entry.t
