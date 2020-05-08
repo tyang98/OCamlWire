@@ -93,7 +93,7 @@ let rec player_count n =
 let main () = 
   ANSITerminal.(
     print_string [red; Bold]
-      "\n Welcome to OScrabble, a functional implementation of Scrabble. \n\n"
+      "\n Welcome to OScrabble, a functional implementation of Scrabble. \n"
   );
   ANSITerminal.(
     print_string [green; Bold]
