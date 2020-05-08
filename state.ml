@@ -10,6 +10,8 @@ type t = {
   players : Player.t list;
   current : int;
   tiles : TileInventory.t;
+  surrender_votes : int;
+  game_over : bool;
 }
 
 let default_bonuses = [
@@ -103,7 +105,9 @@ let init_state player =
         (WordChecker.load_from_file "scrabble.txt"); 
     players = make_players player [];
     current = 0;
-    tiles =  TileInventory.from_file "tiles.txt"
+    tiles =  TileInventory.from_file "tiles.txt";
+    surrender_votes = 0;
+    game_over = false;
   } (List.init player (fun x -> x))
 
 let init_players players = {
@@ -111,7 +115,9 @@ let init_players players = {
       (WordChecker.load_from_file "scrabble.txt"); 
   players = players;
   current = 0;
-  tiles =  TileInventory.from_file "tiles.txt"
+  tiles =  TileInventory.from_file "tiles.txt";
+  surrender_votes = 0;
+  game_over = false;
 } 
 
 (** [bonus_printer tile] is the string representation of a bonus. *)
