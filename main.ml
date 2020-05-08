@@ -21,8 +21,8 @@ type parsed_move =
 let next_state state =
   State.increment_turn state
 
-(** [display_final_score num playersstate] is the representation of the each player's 
-    final score in the game's final state [state]. *)
+(** [display_final_score num playersstate] is the representation of the 
+    each player's final score in the game's final state [state]. *)
 let rec display_final_score num players state = 
   match players with
   | [] -> ();
