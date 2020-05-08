@@ -34,3 +34,10 @@ val grab_tile : t -> int -> int -> t
 
 (** [pass s] is Some new state where the current player passes their turn. *)
 val pass : t -> t option
+
+(** [number_of_players s] is the integer representating the number of 
+    players in this current game state. *)
+val number_of_players : t -> int
+
+(** [get_player_list s] is the list of players in the game state [s]. *)
+val get_player_list : t -> Player.t list
