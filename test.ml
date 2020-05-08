@@ -6,11 +6,12 @@ open Player
 
 (* For our test plan for OScrabble (our implementation of 
    the board game Scrabble), we decided to test the functions from the modules 
-   TrieDictionary, Board, TileInventory, State, Player, and WordChecker with 
-   OUnit. On the other hand, we used the terminal by executing (make run) to 
-   manually test the functionalities of the Main and Gameplay modules because 
-   we could most easily identify the flow of our game and find potential bugs 
-   for scoring and the user-interface.
+   TrieDictionary, Board, TileInventory, State, Player, ProposedMove, and 
+   WordChecker with OUnit. On the other hand, we used the terminal by 
+   executing (make run) to manually test the functionalities of the Main, 
+   Gameplay, and ProposedSwap modules because we could most easily identify 
+   the flow of our game and find potential bugs for scoring and the 
+   user-interface.
 
    In terms of our OUnit tests, we developed our test cases primarily under 
    the principle of black box testing. Our test cases involved both typical 
@@ -35,6 +36,9 @@ open Player
    For the Player module, we tested for the score of an individual player
    and the placement of tiles. We made sure that a player could run out of 
    tiles and could place multiple tiles. 
+   For the ProposedMove module, we tested the creation of different Scrabble
+   moves of various amounts of letters. We made sure that test sequences of 
+   moves as well as invalid and valid moves.
    For the WordChecker module, we loaded the file containing all the words
    from a scrabble dictionary found online and tested to see whether our
    functions could properly identify valid words. 
@@ -136,7 +140,8 @@ let word_checker_tests = [
   make_wc_test "abacuses";
   make_wc_test "octopus";
   make_wc_test "aa";
-  make_wc_test "zzzs"
+  make_wc_test "zzzs";
+  make_wc_test "foxes";
 ] 
 module SCM = StandardCompletedMove.StandardCompletedMove
 
@@ -173,26 +178,41 @@ let board_tests = [
       assert_equal (Board.query_tile 3 4 b_with_letter) (Some (Filled 'F')));
 ]
 
-let player_with_2_moves = 
-  Player.new_p |> Player.add_score 3 |> Player.add_score 4
+let player_with_1_move = 
+  Player.new_p |> Player.add_score 28
+let player_with_3_moves = 
+  Player.new_p |> Player.add_score 3 |> Player.add_score 4 
+  |>  Player.add_score 5
 let player_with_1_tile = 
   Player.new_p |> Player.add_tile Blank
-let player_with_multiple_tiles = 
-  Player.new_p |> Player.add_tile Blank |> Player.add_tile (Letter 'A') 
+let player_with_multiple_blank_tiles = 
+  Player.new_p |> Player.add_tile Blank |> Player.add_tile Blank 
   |> Player.add_tile Blank
+let player_with_multiple_variable_tiles = 
+  Player.new_p |> Player.add_tile Blank |> Player.add_tile (Letter 'A') 
+  |> Player.add_tile Blank |> Player.add_tile (Letter 'b')
 
 (* Test Player functions. *)
 let player_tests = [
+  "Player score test, one move" >:: (fun _ ->
+      assert_equal (Player.score player_with_1_move) 28);
   "Player score test, multi moves" >:: (fun _ ->
-      assert_equal (Player.score player_with_2_moves) 7);
+      assert_equal (Player.score player_with_3_moves) 12);
   "New player has score 0" >:: (fun _ ->
       assert_equal (Player.score Player.new_p) 0);
   "New player has no tiles" >:: (fun _ ->
       assert_equal (Player.tiles Player.new_p) []);
   "Test single tile adding" >:: (fun _ ->
       assert_equal (Player.tiles player_with_1_tile |> List.length) 1);
-  "Test multiple tile adding" >:: (fun _ ->
-      assert_equal (Player.tiles player_with_multiple_tiles |> List.length) 3);
+  "Test multiple blank tile adding" >:: (fun _ ->
+      assert_equal (Player.tiles player_with_multiple_blank_tiles 
+                    |> List.length) 3);
+  "Test multiple blank tile adding" >:: (fun _ ->
+      assert_equal (Player.tiles player_with_multiple_blank_tiles 
+                    |> List.length) 3);
+  "Test multiple variable tile adding" >:: (fun _ ->
+      assert_equal (Player.tiles player_with_multiple_variable_tiles 
+                    |> List.length) 4);
 ]
 
 let the_player = 
@@ -225,7 +245,8 @@ let (>>) (lhs : State.t option) (rhs : ProposedMove.t) : State.t option =
   match lhs with 
   | Some s -> State.execute rhs s
   | None -> lhs
-(** [get_score_p0 state] is the score of player 0 in state [state]*)
+
+(** [get_score_p0 state] is the score of player 0 in state [state]. *)
 let get_score_p0 state = match state with
   | Some state -> State.get_player state 0 |> Player.score
   | None -> -1

@@ -1,11 +1,11 @@
-MODULES= dictionary trieDictionary board completedMove gameplay player proposedMove state test tileInventory standardCompletedMove main
+MODULES= dictionary trieDictionary board completedMove gameplay player proposedMove state tileInventory standardCompletedMove main
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
 TEST=test.byte
 MAIN=main.byte
 OCAMLBUILD=ocamlbuild -use-ocamlfind 
-PKGS=unix,oUnit,str, ANSITerminal
+PKGS=unix,oUnit,str,ANSITerminal
 GIT_HASH=$(shell git log --pretty=format:'%h' -n 1)
 
 default: build
