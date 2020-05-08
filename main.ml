@@ -17,6 +17,27 @@ type parsed_move =
   | Swap of ProposedSwap.t 
   | Pass
 
+(** [next_state state] is the new state after a player's turn ends. *)
+let next_state state =
+  State.increment_turn state
+
+(** [display_final_score num playersstate] is the representation of the each player's 
+    final score in the game's final state [state]. *)
+let rec display_final_score num players state = 
+  match players with
+  | [] -> ();
+  | h::t when num = 1 ->  
+    ANSITerminal.(print_string [Bold; red] "Final Scores: \n");
+    print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int)
+                   ^ ": " ^ (State.whose_turn state |> State.get_player state 
+                             |> Player.score |> string_of_int ));
+    display_final_score (num - 1) t (next_state state)
+  | h::t ->  
+    print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int)
+                   ^ ": " ^ (State.whose_turn state |> State.get_player state 
+                             |> Player.score |> string_of_int ));
+    display_final_score 0 t (next_state state)
+
 (** [parse move] is the ProposedMove submitted by the user based on a 
     x and y coordinate location, direction, and word. *)
 let parse move =

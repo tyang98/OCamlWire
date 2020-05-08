@@ -44,3 +44,9 @@ val surrender : t -> t
 
 (** [surrender_votes s] is the number of players who have voted to surrender *)
 val surrender_votes : t -> int
+(** [number_of_players s] is the integer representating the number of 
+    players in this current game state. *)
+val number_of_players : t -> int
+
+(** [get_player_list s] is the list of players in the game state [s]. *)
+val get_player_list : t -> Player.t list
