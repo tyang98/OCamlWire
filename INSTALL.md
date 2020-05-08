@@ -22,7 +22,7 @@ For example, ``move 2 3 a orange``
 * The ``word`` input can be either a single letter or many letters in succession.
 
 4. To execute a swap on the Scrabble board, you will need to give the following 
-inputs ``swap [letter1] [letter2] ... [letter n] ``
+inputs ``swap [letter 1] [letter 2] ... [letter n]``
 For example, ``swap a b c``
 
 4. To execute a pass on the Scrabble board, you will simply need to type ``pass``
