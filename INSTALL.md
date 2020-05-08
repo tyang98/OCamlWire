@@ -14,7 +14,7 @@ tiles, or passing their turn
 
 3. To execute a move on the Scrabble board, you will need to give the following
 inputs ``move [row] [column] [direction] [word] ``  
-For example, ``2 3 a orange``
+For example, ``move 2 3 a orange``
 
 * The ``row`` input ranges from __0__  to __14__.
 * The ``column`` input ranges from __0__ to __14__.
@@ -23,5 +23,6 @@ For example, ``2 3 a orange``
 
 4. To execute a swap on the Scrabble board, you will need to give the following 
 inputs ``swap [letter1] [letter2] ... [letter n] ``
+For example, ``swap a b c``
 
 4. To execute a pass on the Scrabble board, you will simply need to type ``pass``
