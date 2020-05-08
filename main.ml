@@ -14,6 +14,7 @@ let player_parse number =
 type parsed_move =  
   | Placement of ProposedMove.t
   | Swap of ProposedSwap.t 
+  | Pass
 
 (** [parse move] is the ProposedMove submitted by the user based on a 
     x and y coordinate location, direction, and word. *)
@@ -22,17 +23,22 @@ let parse move =
   let l = String.split_on_char ' ' move in
   match l with 
   | "move"::t -> begin match t with 
-      | x::y::d::w::[] -> let dir = d |> function | "a" | "across" -> Across
-                                                  | "d" | "down" -> Down 
-                                                  | _ -> 
-                                                    failwith "Invalid Direction"
-        in Placement (ProposedMove.create dir (int_of_string x, int_of_string y) 
-                        (chrl_of_str w))
-      | _ -> failwith "Invalid mvoe"
+      | x::y::d::w::[] -> 
+        let dir = d |> function | "a" | "across" -> Across
+                                | "d" | "down" -> Down 
+                                | _ -> 
+                                  failwith "Invalid Direction" in 
+        Placement (ProposedMove.create dir (int_of_string x, int_of_string y) 
+                     (chrl_of_str w))
+      | _ -> failwith "Invalid move"
     end 
   | "swap"::t -> begin match t with 
       | _ -> Swap (ProposedSwap.create t) end
-  | _ -> failwith ""
+  | "pass"::t ->  begin match t with
+      | [] -> Pass 
+      | _ -> failwith "Invalid move"
+    end
+  | _ -> failwith "Not a parsable move"
 
 (** [turn state] is the function that runs each turn of the game. Each
     turn includes placing new letters on the board and returning an associated
@@ -62,6 +68,10 @@ let rec turn state =
         | None -> ANSITerminal.(print_string [red] "Swap not allowed\n\n");
           turn state
         | Some ns -> ns |> State.increment_turn |> turn end
+    | Pass -> State.pass state |> begin function
+        | Some ns -> ns |> State.increment_turn |> turn 
+        | _ -> ANSITerminal.(print_string [red] "Pass not valid\n\n");
+          turn state end
 
 (** [player_count] prompts the user to enter the number of players that
     will play the game. *)

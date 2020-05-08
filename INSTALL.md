@@ -6,10 +6,14 @@
 # Gameplay
 
 1. To play our game, you will be prompted after running ``make run`` to type
-in a move ``move > ``
+in the number of players.
 
-2. To execute a move on the Scrabble board, you will need to give the following
-inputs ``[row] [column] [direction] [word] ``  
+2. After that, each player will be prompted ``move | swap | pass > `` where
+they can either execute a move by placing letters on the board, swapping
+tiles, or passing their turn
+
+3. To execute a move on the Scrabble board, you will need to give the following
+inputs ``move [row] [column] [direction] [word] ``  
 For example, ``2 3 a orange``
 
 * The ``row`` input ranges from __0__  to __14__.

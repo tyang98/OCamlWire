@@ -18,7 +18,6 @@ module Make = functor (Entry : Entry) -> struct
 
   let empty = Node (None, Children.empty)
 
-  (** Assuming this is a helper method, may need to document. *)
   let rec insert word e trie = 
     let Node (cv, map) = trie in
     match word with
@@ -33,7 +32,6 @@ module Make = functor (Entry : Entry) -> struct
 
   let insert word e trie = let word = Entry.to_list word in insert word e trie
 
-  (** Assuming this is a helper method, may need to document. *)
   let rec get word trie =
     let Node (res, map) = trie in
     match word with

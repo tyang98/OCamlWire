@@ -5,7 +5,7 @@ type t
 val init_state : int -> t
 
 (** [init_players players] is a default scrabble game with the players 
-    specified in [players]*)
+    specified in [players]. *)
 val init_players : Player.t list -> t
 
 (* [execute p s] is a the new state after executing proposed move [p] 
@@ -31,3 +31,6 @@ val get_player : t -> int -> Player.t
 (** [grab_tile s n pn] is the current state updated where player number [pn] 
     has taken [n] tiles from the [TileInventory]. *)
 val grab_tile : t -> int -> int -> t
+
+(** [pass s] is Some new state where the current player passes their turn. *)
+val pass : t -> t option

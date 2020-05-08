@@ -4,6 +4,7 @@ type t
 (** [check s d] is whether the dictionary [d] contains the word [s]. *)
 val check : string -> t -> bool
 
-(** [load_from_file file_path] is a [WordChecker.t] loaded with strings from the
-    file at [file_path] such that each line of the file is treated as a word. *)
+(** [load_from_file file_path] is a [WordChecker.t] loaded with strings 
+    from the file at [file_path] such that each line of the file is treated 
+    as a word. *)
 val load_from_file : string -> t

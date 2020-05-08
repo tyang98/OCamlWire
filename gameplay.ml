@@ -17,8 +17,6 @@ module ScrabblePoint = struct
     List.assoc upper_char point_values
 end
 
-(** [make_gameplay b c] is a gameplay with Board [b] and 
-    WordChecker [c]. *)
 let make_gameplay b c = { board = b; checker = c; }
 
 exception InvalidWord of string
@@ -97,8 +95,8 @@ let is_filled = function
   | Some (Empty) -> false
   | _ -> true
 
-(** [next_move move] is the next ProposedMove after one character is placed from
-    [move]. *)
+(** [next_move move] is the next ProposedMove after one character is placed 
+    from [move]. *)
 let next_move move =
   let direction = ProposedMove.direction move in
   let (x, y) = ProposedMove.location move in
@@ -117,8 +115,8 @@ let previous_loc move =
   | Across -> (x - 1, y)
   | Down -> (x, y - 1)
 
-(** [filled_space x y t] is whether the specified location contains a letter in
-    [t]. *)
+(** [filled_space x y t] is whether the specified location contains a letter 
+    in [t]. *)
 let filled_space x y t =
   is_inside (x, y) (Board.size t.board)
   && Board.query_tile y x t.board |> is_filled

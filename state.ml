@@ -70,17 +70,17 @@ let rec get_n_tiles (i : TileInventory.t) (n : int) (acc : tile list)
       | None, _ -> get_n_tiles i 0 acc
     end
 
-(** [give_player_tiles pl i tiles] gives the [i]th player in the player list [pl]
-    the tiles in [tiles] *)  
+(** [give_player_tiles pl i tiles] gives the [i]th player in the player list 
+    [pl] the tiles in [tiles]. *)  
 let give_player_tiles pl i tiles = 
   List.mapi (fun iter player -> if (i = iter) then List.fold_left 
                   (fun (p : Player.t) (t : tile) -> Player.add_tile t p) 
                   player tiles
               else player) pl
 
-(** [grab_tile s n pn] is Some state [s] where player number [pn] has been given
-    [n] new tiles from the tile inventory, if there are tiles left in the 
-    inventory.  If there are no more tiles left in the inventory, grab_tile
+(** [grab_tile s n pn] is Some state [s] where player number [pn] has been 
+    given [n] new tiles from the tile inventory, if there are tiles left in 
+    the inventory. If there are no more tiles left in the inventory, grab_tile
     is None*)
 let grab_tile s n pn = 
   let tile_inventory', tiles = get_n_tiles s.tiles n [] in 
@@ -92,7 +92,7 @@ let grab_tile s n pn =
                       }
   | None -> s
 
-(** [get_player s pn] is a player with player number [pn] in state [s]*)
+(** [get_player s pn] is a player with player number [pn] in state [s]. *)
 let get_player s pn = match List.nth_opt s.players pn with
   | Some p -> p
   | None -> failwith "Precondition violated: No such player"
@@ -113,7 +113,6 @@ let init_players players = {
   current = 0;
   tiles =  TileInventory.from_file "tiles.txt"
 } 
-
 
 (** [bonus_printer tile] is the string representation of a bonus. *)
 let bonus_printer (bonus : Board.bonus) =
@@ -145,9 +144,6 @@ let rec list_printer i lst =
   if i < 10 then print_string "  " else print_string " ";
   List.iter (fun a -> tile_printer a; print_string " ") lst;
   print_string "\n"
-(* match lst with  *)
-(* | [] -> print_string "\n" *)
-(* | h::t -> tile_printer h; print_string  " "; list_printer (i - 1) t *)
 
 let board_printer s = 
   let gameplay = s.gameplay in
@@ -161,22 +157,22 @@ let board_printer s =
   print_string "\n";
   List.iteri (fun i lists -> list_printer i lists) (game_board |> Board.board)
 
-(** [whose_turn s] is the player number of whose turn it is*)
+(** [whose_turn s] is the player number of whose turn it is. *)
 let whose_turn s = s.current
 
 (** [increment_turn s] is the state [s] with the current player being 
-    incremented by 1, including wrap around.*)
+    incremented by 1, including wrap around. *)
 let increment_turn s = 
   {s with current = (s.current + 1) mod (List.length s.players)}
 
 (** [tiles_remaining ls l_tiles blanks] is Some tiles where tiles is the 
     result of removing the letters and blanks required to create the letters
     in [ls] from [l_tiles] and [blanks], and is None if it is not possible
-    to remove blanks or letters to match [ls]*)
+    to remove blanks or letters to match [ls]. *)
 let rec tiles_remaining (ls : char list) (l_tiles : char list) (blanks : int) 
   : TileInventory.tile list option = 
-  (* filter_one lst chr fnd acc is lst with at most one instance of chr removed
-  *)
+  (* filter_one lst chr fnd acc is lst with at most one instance of 
+     chr removed *)
   let rec filter_one (lst) (chr) (fnd) (acc) = 
     match lst with
     | h::t when (not fnd) && (h = chr) -> filter_one t chr true acc
@@ -211,6 +207,8 @@ let verify_tiles (move : ProposedMove.t) (inventory : TileInventory.tile list)
   | Some l -> (Some move, l)
   | None -> None, []
 
+(** [update_tiles new_tiles pn s] is Some new state after player [pn] receives
+    a new set of tiles [new_tiles]. *)
 let update_tiles (new_tiles : Player.tile list) (pn : int) (s : t) : t option = 
   Some {s with 
         players = List.mapi 
@@ -219,7 +217,8 @@ let update_tiles (new_tiles : Player.tile list) (pn : int) (s : t) : t option =
 
        }
 
-(* Lets make a quick sort-of-monad operator to make this cleaner *)
+(** [>>= lhs rhs] is the infix operator respresentation of the bind operation 
+    on [lhs] using the function [rhs] derived from the monad design. *)
 let (>>=) (lhs : 'a option) (rhs : 'a -> 'b option) : 'b option = 
   match lhs with
   | Some a -> rhs a
@@ -250,14 +249,18 @@ let swap (swap : ProposedSwap.t) (s : t) : t option =
                  | Blank -> failwith "precondition violated"
                ) l) 
             (List.length b)
-        ) |> function | None -> None
-                      | Some l -> Some ( 
-                          grab_tile { 
-                            s with players =
-                                     List.mapi 
-                                       (fun i p -> 
-                                          if i = s.current then 
-                                            Player.update_tile l p 
-                                          else p) 
-                                       s.players
-                          } (ProposedSwap.size swap) s.current) 
+        ) |> function 
+     | None -> None
+     | Some l -> Some ( 
+         grab_tile { 
+           s with players =
+                    List.mapi 
+                      (fun i p -> 
+                         if i = s.current then 
+                           Player.update_tile l p 
+                         else p) 
+                      s.players
+         } (ProposedSwap.size swap) s.current) 
+
+let pass (s : t) : t option = 
+  Some s
