@@ -10,8 +10,7 @@ type t = {
   players : Player.t list;
   current : int;
   tiles : TileInventory.t;
-  surrender_votes : int;
-  game_over : bool;
+  surrender_votes : int list;
 }
 
 let default_bonuses = [
@@ -106,8 +105,7 @@ let init_state player =
     players = make_players player [];
     current = 0;
     tiles =  TileInventory.from_file "tiles.txt";
-    surrender_votes = 0;
-    game_over = false;
+    surrender_votes = [];
   } (List.init player (fun x -> x))
 
 let init_players players = {
@@ -116,8 +114,7 @@ let init_players players = {
   players = players;
   current = 0;
   tiles =  TileInventory.from_file "tiles.txt";
-  surrender_votes = 0;
-  game_over = false;
+  surrender_votes = [];
 } 
 
 (** [bonus_printer tile] is the string representation of a bonus. *)
@@ -266,3 +263,12 @@ let pass (s : t) : t option =
 let number_of_players s = List.length s.players
 
 let get_player_list s = s.players
+
+let surrender s = 
+  let pn = whose_turn s in
+  if List.mem pn s.surrender_votes then None else 
+    Some {s with surrender_votes = pn::s.surrender_votes}
+
+let surrender_votes s = List.length s.surrender_votes
+
+let game_over s = (List.length s.surrender_votes) = (List.length s.players)

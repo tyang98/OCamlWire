@@ -39,8 +39,8 @@ val pass : t -> t option
 val game_over : t -> bool
 
 (** [surrenter s] is the current game but the current player has voted to 
-    surrender *)
-val surrender : t -> t
+    surrender, is None if the current player has already voted to surrender *)
+val surrender : t -> t option
 
 (** [surrender_votes s] is the number of players who have voted to surrender *)
 val surrender_votes : t -> int
