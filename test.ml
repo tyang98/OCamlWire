@@ -137,13 +137,13 @@ let make_wc_test word =
 
 (* Test WordChecker functions. *)
 let word_checker_tests = [
+  make_wc_test "oxymoron";
   make_wc_test "abacuses";
   make_wc_test "octopus";
   make_wc_test "aa";
   make_wc_test "zzzs";
   make_wc_test "foxes";
 ] 
-module SCM = StandardCompletedMove.StandardCompletedMove
 
 let bonuses = [(0, 0, WordBonus 0); (1, 2, WordBonus 3)]
 
@@ -157,6 +157,7 @@ let b_with_letter = b
                     |> Board.set_tile 14 14 'c'
                     |> Board.set_tile 14 0 'd'
                     |> Board.set_tile 3 4 'F'
+                    |> Board.set_tile 7 7 '_'
 
 (* Test Board functions. *)
 let board_tests = [
@@ -176,6 +177,8 @@ let board_tests = [
       assert_equal (Board.query_tile 14 0 b_with_letter) (Some (Filled 'd')));
   "Test letters in non-edge position" >:: (fun _ -> 
       assert_equal (Board.query_tile 3 4 b_with_letter) (Some (Filled 'F')));
+  "Test blank letter in center position" >:: (fun _ -> 
+      assert_equal (Board.query_tile 7 7 b_with_letter) (Some (Filled '_')));
 ]
 
 let player_with_1_move = 
@@ -229,7 +232,7 @@ let player_4 = State.init_state 4
 (* Move 7,7,a,ice *)
 let move_simple = ProposedMove.create Across (7,7) ['i';'c';'e'] 
 
-(* move 6,7,a,n to extend move_simple*)
+(* move 6,7,a,n to extend move_simple *)
 let move_ex = ProposedMove.create Across (6,7) ['n'] 
 let move_ex2 = ProposedMove.create Down (6, 6) ['i']
 let move_ex3 = ProposedMove.create Across (4, 5) ['y';'a';'w']
@@ -270,18 +273,6 @@ let state_tests = [
                              |> Option.map (
                                fun s -> State.get_player s 0 |> Player.score
                              ))
-    );
-
-  "Test placing removes tiles from inventory" >:: (fun _ -> 
-      assert_equal (Some (11)) (the_state
-                                |> State.execute [move_simple]
-                                |> Option.map (
-                                  fun s -> State.get_player s 0 
-                                           |> Player.tiles 
-                                           |> List.length
-                                ) ) 
-        ~printer:(fun x -> match x with None -> "none" 
-                                      | Some x -> string_of_int x)
     );
 
   "Test invalid word" >:: (fun _ -> 

@@ -1,3 +1,5 @@
+(** Module representing the tile inventory for players. *)
+
 (** [t] is the type of a tile inventory. *)
 type t
 

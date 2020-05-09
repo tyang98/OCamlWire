@@ -1,3 +1,5 @@
+(** Representation of a proposed swap of tiles in Scrabble. *)
+
 (** [t] is the type representing a proposed move. *)
 type t 
 

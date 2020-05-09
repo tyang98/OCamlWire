@@ -1,3 +1,8 @@
+(**  Representation of the Scrabble game board.
+     This module represents the initial structure of the game board with 
+     a specified size and set of bonuses. *)
+
+
 (** [t] is the type representing a board. *)
 type t 
 

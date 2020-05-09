@@ -1,3 +1,7 @@
+(** Representation of a proposed move in Scrabble.
+    This module represents a player's intended move with 
+    specified locations, directions, and letters. *)
+
 (** [t] is the type representing a proposed move. *)
 type t 
 

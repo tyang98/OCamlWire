@@ -1,4 +1,4 @@
-(* Module representing the standard scrabble completed move. *)
+(** Module representing the standard Scrabble completed move. *)
 
 (** [ScrabblePoint] is a module matching [LetterValueMap] where the mappings
     are that of the original scrabble board game. *)

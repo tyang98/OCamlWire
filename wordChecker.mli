@@ -1,3 +1,7 @@
+(** Representation of a word checker in Scrabble.
+    This module is responsible for checking whether a word 
+    is actually a legitmate Scrabble word from a dictionary. *)
+
 (** [t] is the type of a word checker. *)
 type t
 

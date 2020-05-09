@@ -1,3 +1,5 @@
+(** Representation of a Scrabble player. *)
+
 (** [t] is the type representing a player. *)
 type t 
 
