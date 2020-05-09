@@ -28,16 +28,17 @@ let rec player_index player players =
 
 (** [winner_determiner state] is the message to whoever wins the game. *)
 let winner_determiner state = 
-  let players = State.get_player_list state in
-  let best =
-    List.find (fun p -> 0 = (p |> Player.tiles |> List.length)) players in
-  let index = player_index best players in
-  let string_index = (index |> string_of_int) in
-  if index < 0
-  then ANSITerminal.(print_string [Bold] 
-                       ("No winners"))
-  else ANSITerminal.(print_string [Bold] 
-                       ("\nWinner: " ^ "Player " ^ string_index))
+  try
+    let players = State.get_player_list state in
+    let best =
+      List.find (fun p -> 0 = (p |> Player.tiles |> List.length)) players in
+    let index = player_index best players in
+    let string_index = (index |> string_of_int) in
+    ANSITerminal.(print_string [Bold] 
+                    ("\nWinner: " ^ "Player " ^ string_index))
+  with _ -> 
+    ANSITerminal.(print_string [Bold] ("No winners"))
+
 
 (** [next_state state] is the new state after a player's turn ends. *)
 let next_state state =
@@ -176,15 +177,7 @@ let main () =
                   "\n\n How many players would like to play this game? \n");
   ANSITerminal.(print_string [green; Bold]
                   "\n Enter number of players: ");
-  try 
-    let players = read_line () |> player_parse in
-    player_count players
-  with _ ->
-    ANSITerminal.(
-      print_string [green; Bold]
-        "\n Enter number of players again: "
-    );
-    let players = read_line () |> player_parse in
-    player_count players
+  let players = read_line () |> player_parse in
+  player_count players
 
 let () = main ()
