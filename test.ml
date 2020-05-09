@@ -241,7 +241,7 @@ let legal_move = ProposedMove.create Across (7, 7) ['x';'i']
 let illegal_move = ProposedMove.create Across (4, 6) ['a';'f';'d']
 
 (* State.execute operator to work with state options *)
-let (>>) (lhs : State.t option) (rhs : ProposedMove.t) : State.t option = 
+let (>>) (lhs : State.t option) (rhs : ProposedMove.t list) : State.t option = 
   match lhs with 
   | Some s -> State.execute rhs s
   | None -> lhs
@@ -266,7 +266,7 @@ let state_tests = [
                     |> State.whose_turn) (0));
   "Test scoring" >:: (fun _ -> 
       assert_equal (Some 5) (the_state
-                             |> State.execute move_simple
+                             |> State.execute [move_simple]
                              |> Option.map (
                                fun s -> State.get_player s 0 |> Player.score
                              ))
@@ -274,7 +274,7 @@ let state_tests = [
 
   "Test placing removes tiles from inventory" >:: (fun _ -> 
       assert_equal (Some (11)) (the_state
-                                |> State.execute move_simple
+                                |> State.execute [move_simple]
                                 |> Option.map (
                                   fun s -> State.get_player s 0 |> Player.tiles 
                                            |> List.length
@@ -284,36 +284,36 @@ let state_tests = [
     );
 
   "Test invalid word" >:: (fun _ -> 
-      assert_equal (None) (State.execute illegal_move the_state) 
+      assert_equal (None) (State.execute [illegal_move] the_state) 
     );
 
   "Test valid word, but dont have the letters" >:: (fun _ -> 
-      assert_equal (None) (State.execute legal_move the_state)
+      assert_equal (None) (State.execute [legal_move] the_state)
     );
 
   "Test scoring addition" >:: (fun _ -> 
       assert_equal (11) (
-        Some the_state >> move_simple >> move_ex |> get_score_p0
+        Some the_state >> [move_simple] >> [move_ex] |> get_score_p0
       ) ~printer:string_of_int
     );
 
   "Test scoring addition double letter" >:: (fun _ -> 
       assert_equal (14) (
         Some the_state
-        >> move_simple >> move_ex >> move_ex2 |> get_score_p0
+        >> [move_simple] >> [move_ex] >> [move_ex2] |> get_score_p0
       ) ~printer:string_of_int
     );
   "Test scoring addition triple letter" >:: (fun _ -> 
       assert_equal (31) (
         Some the_state
-        >> move_simple >> move_ex >> move_ex2 >> move_ex3 |> get_score_p0
+        >> [move_simple] >> [move_ex] >> [move_ex2] >> [move_ex3] |> get_score_p0
       ) ~printer:string_of_int
     );
 
   "Test scoring addition double word" >:: (fun _ -> 
       assert_equal (46) (
         Some the_state
-        >> move_simple >> move_ex >> move_ex2 >> move_ex3 >> move_ex5
+        >> [move_simple] >> [move_ex] >> [move_ex2] >> [move_ex3] >> [move_ex5]
         |> get_score_p0
       ) ~printer:string_of_int
     );
