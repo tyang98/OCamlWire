@@ -8,6 +8,10 @@ type tile = Letter of char | Blank
     followed by a tile inventory with the tile [tile] removed. *)
 val next_tile : t -> tile option * t
 
+(** [tiles_left t] is the number of tiles left a player has in his
+    or her tile inventory. *)
+val tiles_left : t -> int
+
 (** [draw i t] is the pair of tile lists that consists of the number [i] of 
     tiles need to be drawn and the current tiles. *)
 val draw : int -> t -> tile list * t

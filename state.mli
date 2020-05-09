@@ -35,10 +35,14 @@ val grab_tile : t -> int -> int -> t
 (** [pass s] is Some new state where the current player passes their turn. *)
 val pass : t -> t option
 
-(** [game_over s] is whether the game represented by [s] is over*)
+(** [game_over s] is whether the game represented by [s] is over. *)
 val game_over : t -> bool
 
-(** [surrenter s] is the current game but the current player has voted to 
+(** [win_game s] is whether a game has been won if a player has no
+    remaining tiles left. *)
+val win_game : t -> bool
+
+(** [surrender s] is the current game but the current player has voted to 
     surrender, is None if the current player has already 
     voted to surrender. *)
 val surrender : t -> t option
