@@ -9,6 +9,9 @@ let shuffle lst =
   |> List.sort (fun (a, _) (b, _) -> compare a b )
   |> List.map snd
 
+let tiles_left tiles = 
+  List.length tiles
+
 let from_file path = 
   let get_line file = try Some (input_line file) with End_of_file -> None in
   let to_tile (c : char) = if c = '_' then Blank else Letter c in

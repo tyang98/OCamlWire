@@ -18,6 +18,27 @@ type parsed_move =
   | Pass
   | Surrender 
 
+(** [player_index player players] is the index of [player] in the list of 
+    players [players]. *)
+let rec player_index player players =
+  match players with
+  | [] -> failwith "no player index"
+  | h::t -> if h = player then 0
+    else 1 + player_index player t
+
+(** [winner_determiner state] is the message to whoever wins the game. *)
+let winner_determiner state = 
+  let players = State.get_player_list state in
+  let best =
+    List.find (fun p -> 0 = (p |> Player.tiles |> List.length)) players in
+  let index = player_index best players in
+  let string_index = (index |> string_of_int) in
+  if index < 0
+  then ANSITerminal.(print_string [Bold] 
+                       ("No winners"))
+  else ANSITerminal.(print_string [Bold] 
+                       ("\nWinner: " ^ "Player " ^ string_index))
+
 (** [next_state state] is the new state after a player's turn ends. *)
 let next_state state =
   State.increment_turn state
@@ -30,6 +51,7 @@ let rec display_final_score num players state =
     ANSITerminal.(print_string [Bold;green] "\nThanks for playing!!! \n");
     Stdlib.exit 0
   | h::t when num = 1 ->  
+    winner_determiner state;
     ANSITerminal.(print_string [Bold; red] "\nFinal Scores: \n");
     print_endline ("Player " ^ (state |> State.whose_turn |> string_of_int)
                    ^ ": " ^ (State.whose_turn state |> State.get_player state 
@@ -60,8 +82,7 @@ let parse move =
   | "swap"::t -> begin match t with 
       | _ -> Swap (ProposedSwap.create t) end
   | "pass"::t ->  begin match t with
-      | [] -> Pass 
-      | _ -> failwith "Invalid move" end
+      | _ -> Pass end
   | "surrender"::t -> begin match t with 
       | _ -> Surrender end
   | _ -> failwith "Not a parsable move"
@@ -106,6 +127,7 @@ let rec turn state =
     | Surrender -> State.surrender state |> begin function
         | None -> 
           ANSITerminal.(print_string [red] "Surrender not allowed\n\n");
+          turn state 
         | Some ns -> ns |> State.increment_turn |> turn end
 
 
@@ -137,7 +159,17 @@ let main () =
     print_string [green; Bold]
       "\n Enter number of players: "
   );
-  let players = read_line () |> player_parse in
-  player_count players
+  try 
+    let players = read_line () |> player_parse in
+    player_count players
+  with _ ->
+    ANSITerminal.(
+      print_string [green; Bold]
+        "\n Enter number of players again: "
+    );
+    let players = read_line () |> player_parse in
+    player_count players
+
+
 
 let () = main ()

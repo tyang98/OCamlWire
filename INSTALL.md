@@ -28,5 +28,5 @@ For example, ``swap a b c``
 5. To execute a pass on the Scrabble board, you will simply need to type ``pass``
 
 6. To execute a surrender, you will simply need to type ``surrender``. Once all
-players type ``surrender`` during their turn, the game will end.
+players type ``surrender`` during their respective turns, the game will end.
 

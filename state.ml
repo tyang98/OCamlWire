@@ -271,4 +271,9 @@ let surrender s =
 
 let surrender_votes s = List.length s.surrender_votes
 
-let game_over s = (List.length s.surrender_votes) = (List.length s.players)
+let win_game s = 
+  (s.tiles |> TileInventory.tiles_left) = 0
+
+let game_over s = 
+  (List.length s.surrender_votes) = (List.length s.players) || 
+  win_game s
