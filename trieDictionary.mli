@@ -1,3 +1,5 @@
+(** [TrieDictionary] is an implementation of Dictionary using a Trie data
+    structure *)
 open Dictionary
 open Map
 

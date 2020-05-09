@@ -1,7 +1,8 @@
-open ProposedMove
 (** Representation of the primary gameplay of Scrabble. 
     This module is responsible for executing moves and other
     game logistics. *)
+
+open ProposedMove
 
 (** [t] is the type representing the gameplay. *)
 type t
