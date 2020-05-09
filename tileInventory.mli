@@ -12,8 +12,8 @@ val next_tile : t -> tile option * t
     or her tile inventory. *)
 val tiles_left : t -> int
 
-(** [draw i t] is the pair of tile lists that consists of the number [i] of 
-    tiles need to be drawn and the current tiles. *)
+(** [draw i t] is a list of [i] tiles drawn from [t] and a new [TileInventory.t]
+    with those tiles rremoved. *)
 val draw : int -> t -> tile list * t
 
 (** [from_file f] is the list of possible tiles read from the file [f]. *)
