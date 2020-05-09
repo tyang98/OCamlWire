@@ -13,7 +13,7 @@ let player_parse number =
 
 (** [parsed_move] is the type representing a Scrabble move. *)
 type parsed_move =  
-  | Placement of ProposedMove.t
+  | Placement of ProposedMove.t list
   | Swap of ProposedSwap.t 
   | Pass
   | Surrender 
@@ -45,16 +45,35 @@ let rec display_final_score num players state =
     x and y coordinate location, direction, and word. *)
 let parse move =
   let chrl_of_str str = List.init (String.length str) (fun i -> str.[i]) in
+  let rec parse_move dir l = function
+    | [] -> l
+    | x::y::w::t -> parse_move dir ((ProposedMove.create dir (int_of_string x, int_of_string y) 
+                                       (chrl_of_str w))::l) t
+    | _ -> failwith "Invalid move"
+  in
+  let in_line =
+    List.fold_left
+      (fun acc move -> let (x, y) = ProposedMove.location move in
+        match acc with
+        | Some v -> begin match ProposedMove.direction move with
+            | Down when x = v -> Some v
+            | Across when y = v -> Some v
+            | _ -> failwith "Invalid move"
+          end
+        | None -> match ProposedMove.direction move with
+            Across -> Some y | Down -> Some x
+      ) None in
   let l = String.split_on_char ' ' move in
   match l with 
   | "move"::t -> begin match t with 
-      | x::y::d::w::[] -> 
+      | d::t when List.length t > 0 -> 
         let dir = d |> function | "a" | "across" -> Across
                                 | "d" | "down" -> Down 
                                 | _ -> 
                                   failwith "Invalid Direction" in 
-        Placement (ProposedMove.create dir (int_of_string x, int_of_string y) 
-                     (chrl_of_str w))
+        let move = parse_move dir [] t in
+        ignore (in_line move);
+        Placement move
       | _ -> failwith "Invalid move"
     end 
   | "swap"::t -> begin match t with 

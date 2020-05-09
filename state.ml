@@ -192,8 +192,9 @@ let rec tiles_remaining (ls : char list) (l_tiles : char list) (blanks : int)
 
 (** [verify_tiles move inventory] is Some [move] if all the tiles required to
 *)  
-let verify_tiles (move : ProposedMove.t) (inventory : TileInventory.tile list) 
-  : ProposedMove.t option * (TileInventory.tile list) = 
+let verify_tiles (moves : ProposedMove.t list) (inventory : TileInventory.tile list) 
+  : ProposedMove.t list option * (TileInventory.tile list) = 
+  let letters = moves |> List.map ProposedMove.letters |> List.flatten in
   let num_blanks, letter_tiles = 
     inventory |> List.partition (fun a -> a == Blank) 
     |> fun (b, l) -> 
@@ -205,9 +206,9 @@ let verify_tiles (move : ProposedMove.t) (inventory : TileInventory.tile list)
           | Letter a -> a) l
     ) in
   let x = 
-    tiles_remaining (ProposedMove.letters move) letter_tiles num_blanks in 
+    tiles_remaining (letters) letter_tiles num_blanks in 
   match x with 
-  | Some l -> (Some move, l)
+  | Some l -> (Some moves, l)
   | None -> None, []
 
 (** [update_tiles new_tiles pn s] is Some new state after player [pn] receives
@@ -222,7 +223,7 @@ let update_tiles (new_tiles : Player.tile list) (pn : int) (s : t) : t option =
 (** [>>=] is the infix operator for Option.bind. *)
 let (>>=) = Option.bind
 
-let execute (move : ProposedMove.t) (e : t) = 
+let execute (move : ProposedMove.t list) (e : t) = 
   let (pmove_opt, new_tiles) = 
     verify_tiles move (e |> whose_turn |> get_player e |> Player.tiles) in
   let (draw, inv) = TileInventory.draw (7 - List.length new_tiles) e.tiles in

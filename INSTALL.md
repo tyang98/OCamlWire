@@ -13,8 +13,9 @@ they can either execute a move by placing letters on the board, swapping
 tiles, or passing their turn
 
 3. To execute a move on the Scrabble board, you will need to give the following
-inputs ``move [row] [column] [direction] [word] ``  
-For example, ``move 2 3 a orange``
+inputs ``move [direction] ([row] [column] [word])`` where `[row] [column] [word]` can be repeated for placing tiles
+on either side of existing tiles. valid directions are `across`, `a`, `down`, and `d`.
+For example, ``move a 2 3 orange``
 
 * The ``row`` input ranges from __0__  to __14__.
 * The ``column`` input ranges from __0__ to __14__.

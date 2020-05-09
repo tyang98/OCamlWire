@@ -5,7 +5,7 @@ type t
 
 (** [execute pm t] is [Some (new_state * move_score)] if the proposed move is 
     valid, otherwise is [None]. *)
-val execute : ProposedMove.t -> t -> (t * int) option
+val execute : ProposedMove.t list -> t -> (t * int) option
 
 (** [query_tile r c g] is Some tile if there is a tile in [r] [c] on [b], 
     otherwise is None. *)

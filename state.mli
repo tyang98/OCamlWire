@@ -10,7 +10,7 @@ val init_players : Player.t list -> t
 
 (* [execute p s] is a the new state after executing proposed move [p] 
    on the current state [s]. *)
-val execute : ProposedMove.t -> t -> t option
+val execute : ProposedMove.t list -> t -> t option
 
 (** [swap n s] is Some new state where the current player swaps*)
 val swap : ProposedSwap.t -> t -> t option
