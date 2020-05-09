@@ -1,6 +1,7 @@
 (** [t] is the type representing a proposed move. *)
 type t 
 
+(** [tile] is the type representing a [TileInventory] tile. *)
 type tile = TileInventory.tile
 
 (** [create tiles] is a proposed swap where we want to swap the tiles 

@@ -69,8 +69,10 @@ let parse move =
   let chrl_of_str str = List.init (String.length str) (fun i -> str.[i]) in
   let rec parse_move dir l = function
     | [] -> l
-    | x::y::w::t -> parse_move dir ((ProposedMove.create dir (int_of_string x, int_of_string y) 
-                                       (chrl_of_str w))::l) t
+    | x::y::w::t -> 
+      parse_move dir 
+        ((ProposedMove.create dir (int_of_string x, int_of_string y) 
+            (chrl_of_str w))::l) t
     | _ -> failwith "Invalid move"
   in
   let in_line =
@@ -170,14 +172,10 @@ let main () =
     print_string [red; Bold]
       "\n Welcome to OScrabble, a functional implementation of Scrabble. \n"
   );
-  ANSITerminal.(
-    print_string [green; Bold]
-      "\n\n How many players would like to play this game? \n"
-  );
-  ANSITerminal.(
-    print_string [green; Bold]
-      "\n Enter number of players: "
-  );
+  ANSITerminal.(print_string [green; Bold]
+                  "\n\n How many players would like to play this game? \n");
+  ANSITerminal.(print_string [green; Bold]
+                  "\n Enter number of players: ");
   try 
     let players = read_line () |> player_parse in
     player_count players
@@ -188,7 +186,5 @@ let main () =
     );
     let players = read_line () |> player_parse in
     player_count players
-
-
 
 let () = main ()

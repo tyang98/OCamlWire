@@ -240,7 +240,7 @@ let legal_move = ProposedMove.create Across (7, 7) ['x';'i']
 
 let illegal_move = ProposedMove.create Across (4, 6) ['a';'f';'d']
 
-(* State.execute operator to work with state options *)
+(** State.execute operator to work with state options *)
 let (>>) (lhs : State.t option) (rhs : ProposedMove.t list) : State.t option = 
   match lhs with 
   | Some s -> State.execute rhs s

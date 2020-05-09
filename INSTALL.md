@@ -31,3 +31,5 @@ For example, ``swap a b c``
 6. To execute a surrender, you will simply need to type ``surrender``. Once all
 players type ``surrender`` during their respective turns, the game will end.
 
+7. To win the game, the first player with no tiles left will win.
+

@@ -190,23 +190,20 @@ let rec tiles_remaining (ls : char list) (l_tiles : char list) (blanks : int)
   | [] -> Some (List.flatten [List.map (fun a -> Letter a) l_tiles; 
                               List.init blanks (fun _ -> Blank)])
 
-(** [verify_tiles move inventory] is Some [move] if all the tiles required to
-*)  
-let verify_tiles (moves : ProposedMove.t list) (inventory : TileInventory.tile list) 
+(** [verify_tiles move inventory] is Some [move] if all the tiles 
+    required to. *)  
+let verify_tiles (moves : ProposedMove.t list) 
+    (inventory : TileInventory.tile list) 
   : ProposedMove.t list option * (TileInventory.tile list) = 
   let letters = moves |> List.map ProposedMove.letters |> List.flatten in
   let num_blanks, letter_tiles = 
     inventory |> List.partition (fun a -> a == Blank) 
     |> fun (b, l) -> 
-    (
-      List.length b,
-      List.map (fun a -> 
-          match a with 
-          | Blank -> failwith "Precondition violated" 
-          | Letter a -> a) l
-    ) in
-  let x = 
-    tiles_remaining (letters) letter_tiles num_blanks in 
+    (List.length b, List.map (fun a -> 
+         match a with 
+         | Blank -> failwith "Precondition violated" 
+         | Letter a -> a) l) in
+  let x = tiles_remaining (letters) letter_tiles num_blanks in 
   match x with 
   | Some l -> (Some moves, l)
   | None -> None, []
@@ -216,8 +213,8 @@ let verify_tiles (moves : ProposedMove.t list) (inventory : TileInventory.tile l
 let update_tiles (new_tiles : Player.tile list) (pn : int) (s : t) : t option = 
   Some {s with 
         players = List.mapi 
-            (fun i p -> 
-               if i = pn then Player.update_tile new_tiles p else p) s.players
+            (fun i p -> if i = pn then Player.update_tile new_tiles p 
+              else p) s.players
        }
 
 (** [>>=] is the infix operator for Option.bind. *)
