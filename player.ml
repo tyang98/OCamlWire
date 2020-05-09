@@ -1,9 +1,6 @@
 open Gameplay
 
-module CM = StandardCompletedMove.StandardCompletedMove
-
 type tile = TileInventory.tile
-
 
 type t = (int) * (tile list)
 

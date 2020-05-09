@@ -6,8 +6,6 @@ type t
 (** [tile] represents the type of tiles contained in a players inventory. *)
 type tile = TileInventory.tile
 
-module CM = StandardCompletedMove.StandardCompletedMove
-
 (** [add le p] is a player with all the same tiles as [p] 
     in addition to [le]. *)
 val add_tile : tile -> t -> t
