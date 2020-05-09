@@ -2,7 +2,6 @@ open Gameplay
 
 type tile = TileInventory.tile
 
-
 type t = (int) * (tile list)
 
 let new_p = (0, [])
