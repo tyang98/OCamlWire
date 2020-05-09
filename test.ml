@@ -134,6 +134,9 @@ let () = print_endline "finished dictionary load"
 let make_wc_test word =
   word >:: (fun _ -> WordChecker.check word wc
                      |> assert_equal true ~printer:(string_of_bool))
+let make_wc_not_real_test word =
+  word >:: (fun _ -> WordChecker.check word wc
+                     |> assert_equal false ~printer:(string_of_bool))
 
 (* Test WordChecker functions. *)
 let word_checker_tests = [
@@ -143,6 +146,8 @@ let word_checker_tests = [
   make_wc_test "aa";
   make_wc_test "zzzs";
   make_wc_test "foxes";
+  make_wc_not_real_test "yeet";
+  make_wc_not_real_test "hoxa";
 ] 
 
 let bonuses = [(0, 0, WordBonus 0); (1, 2, WordBonus 3)]
