@@ -276,7 +276,8 @@ let state_tests = [
       assert_equal (Some (11)) (the_state
                                 |> State.execute [move_simple]
                                 |> Option.map (
-                                  fun s -> State.get_player s 0 |> Player.tiles 
+                                  fun s -> State.get_player s 0 
+                                           |> Player.tiles 
                                            |> List.length
                                 ) ) 
         ~printer:(fun x -> match x with None -> "none" 
@@ -306,7 +307,8 @@ let state_tests = [
   "Test scoring addition triple letter" >:: (fun _ -> 
       assert_equal (31) (
         Some the_state
-        >> [move_simple] >> [move_ex] >> [move_ex2] >> [move_ex3] |> get_score_p0
+        >> [move_simple] >> [move_ex] >> [move_ex2] >> [move_ex3] 
+        |> get_score_p0
       ) ~printer:string_of_int
     );
 
