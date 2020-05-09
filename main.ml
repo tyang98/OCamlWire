@@ -37,7 +37,7 @@ let winner_determiner state =
     ANSITerminal.(print_string [Bold] 
                     ("\nWinner: " ^ "Player " ^ string_index))
   with _ -> 
-    ANSITerminal.(print_string [Bold] ("No winners"))
+    ANSITerminal.(print_string [Bold] ("\nNo winners"))
 
 
 (** [next_state state] is the new state after a player's turn ends. *)
