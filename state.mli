@@ -10,11 +10,11 @@ val init_state : int -> t
     specified in [players]. *)
 val init_players : Player.t list -> t
 
-(* [execute p s] is a the new state after executing proposed move [p] 
-   on the current state [s]. *)
+(** [execute p s] is a the new state after executing proposed move [p] 
+    on the current state [s]. *)
 val execute : ProposedMove.t list -> t -> t option
 
-(** [swap n s] is Some new state where the current player swaps*)
+(** [swap n s] is Some new state where the current player swaps. *)
 val swap : ProposedSwap.t -> t -> t option
 
 (** [increment_turn s] is s with the next players turn as current. *)

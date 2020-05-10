@@ -11,8 +11,8 @@ type t
     valid, otherwise is [None]. *)
 val execute : ProposedMove.t list -> t -> (t * int) option
 
-(** [query_tile r c g] is Some tile if there is a tile in [r] [c] on [b], 
-    otherwise is None. *)
+(** [query_tile r c g] is Some tile if there is a tile in [r] [c] on the
+    board in this gameplay [g], otherwise is None. *)
 val query_tile : int -> int -> t -> Board.tile option
 
 (** [obtain_board g] is the board corresponding to this gameplay [g]. *)

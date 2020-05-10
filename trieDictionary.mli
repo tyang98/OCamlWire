@@ -1,5 +1,5 @@
 (** [TrieDictionary] is an implementation of Dictionary using a Trie data
-    structure *)
+    structure. *)
 open Dictionary
 open Map
 
@@ -8,8 +8,11 @@ open Map
 module type Entry = sig
   module Target : Map.OrderedType
 
+  (** The type of an entry in the dictionary. *)
   type t
 
+  (** [to_list e] is the list representation of entries in a 
+      dictionary. *)
   val to_list : t -> Target.t list
 end
 

@@ -44,7 +44,7 @@ let winner_determiner state =
 let next_state state =
   State.increment_turn state
 
-(** [display_final_score num playersstate] is the representation of the 
+(** [display_final_score num players state] is the representation of the 
     each player's final score in the game's final state [state]. *)
 let rec display_final_score num players state = 
   match players with
@@ -110,8 +110,8 @@ let parse move =
   | _ -> failwith "Not a parsable move"
 
 (** [turn state] is the function that runs each turn of the game. Each
-    turn includes placing new letters on the board and returning an associated
-    score for each player's respective moves. *)
+    turn includes placing new letters on the board and returning an 
+    associated score for each player's respective moves. *)
 let rec turn state =
   if State.game_over state 
   then 
@@ -153,7 +153,7 @@ let rec turn state =
         | Some ns -> ns |> State.increment_turn |> turn end
 
 
-(** [player_count] prompts the user to enter the number of players that
+(** [player_count n] prompts the user to enter the number of players that
     will play the game. *)
 let rec player_count n = 
   match n > 0 with
