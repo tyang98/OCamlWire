@@ -1,7 +1,5 @@
 # OScrabble - CS 3110 Final Project
 
-![alt text](screenshots/oscrabble.png "Starting Page of Game")
-
 # Installation
 
 1.  After opening the zip file, type ``make build`` in the terminal to build our system.
@@ -37,3 +35,6 @@ players type ``surrender`` during their respective turns, the game will end.
 
 7. To win the game, the first player with no tiles left will win.
 
+#Screenshots
+
+![alt text](screenshots/oscrabble.png "Starting Page of Game" =250x250)
