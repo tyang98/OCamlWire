@@ -37,4 +37,4 @@ players type ``surrender`` during their respective turns, the game will end.
 
 #Screenshots
 
-![alt text](screenshots/oscrabble.png =250x250 "Starting Page of Game" )
+![alt text](screenshots/oscrabble.png "Starting Page of Game")
