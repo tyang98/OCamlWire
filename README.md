@@ -1,5 +1,7 @@
 # OScrabble - CS 3110 Final Project
 
+![alt text](screenshots/oscrabble.png "Starting Page of Game")
+
 # Installation
 
 1.  After opening the zip file, type ``make build`` in the terminal to build our system.
